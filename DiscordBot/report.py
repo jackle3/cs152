@@ -1,254 +1,394 @@
-from enum import Enum, auto
 import discord
-import re
+from discord.ui import View, Button, Select
+from discord import SelectOption
+import shortuuid
 
+FRAUD_OPTIONS = [
+    {
+        "label": "Phishing",
+        "value": "phishing",
+        "description": "Attempts to steal personal information",
+    },
+    {
+        "label": "Investment Scam",
+        "value": "investment_scam",
+        "description": "Fraudulent investment opportunities",
+    },
+    {
+        "label": "E-Commerce Scam",
+        "value": "ecommerce",
+        "description": "Fake stores or counterfeit items",
+    },
+    {
+        "label": "Account Takeover",
+        "value": "account_takeover",
+        "description": "Unauthorized account access",
+    },
+]
 
-class State(Enum):
-    REPORT_START = auto()
-    AWAITING_MESSAGE = auto()
-    AWAITING_POST_TYPE = auto()
-    AWAITING_OTHER_FRAUD_CHECK = auto()
-    AWAITING_FRAUD_TYPE = auto()
-    AWAITING_PHISHING_TYPE = auto()
-    AWAITING_INVESTMENT_SCAM_TYPE = auto()
-    AWAITING_ECOMMERCE_TYPE = auto()
-    AWAITING_ACCOUNT_TAKEOVER_TYPE = auto()
-    AWAITING_BLOCK_DECISION = auto()
-    REPORT_COMPLETE = auto()
+FRAUD_SUBTYPES = {
+    "phishing": {
+        "title": "Select Phishing Type",
+        "description": "What type of information is being sought?",
+        "options": [
+            {
+                "label": "identifying_info",
+                "value": "identifying_info",
+                "description": "Seeking birthday, name, or other identifying information",
+            },
+            {
+                "label": "location",
+                "value": "location",
+                "description": "Seeking location information",
+            },
+            {
+                "label": "payment_info",
+                "value": "payment_info",
+                "description": "Seeking credit card or payment details",
+            },
+            {
+                "label": "SSN",
+                "value": "ssn",
+                "description": "Seeking Social Security Number",
+            },
+        ],
+    },
+    "investment_scam": {
+        "title": "Select Investment Scam Type",
+        "description": "What kind of investment scam is this?",
+        "options": [
+            {
+                "label": "Crypto",
+                "value": "crypto",
+                "description": "Cryptocurrency investment scam",
+            },
+            {
+                "label": "Counterfeit",
+                "value": "counterfeit",
+                "description": "Selling counterfeit items",
+            },
+            {
+                "label": "Other",
+                "value": "other",
+                "description": "Other investment scam type",
+            },
+        ],
+    },
+    "ecommerce": {
+        "title": "Select E-Commerce Scam Type",
+        "description": "What kind of e-commerce fraud is this?",
+        "options": [
+            {
+                "label": "Fake Online Store",
+                "value": "fake_store",
+                "description": "Fraudulent online store",
+            },
+            {
+                "label": "Counterfeit Items",
+                "value": "counterfeit",
+                "description": "Selling counterfeit items",
+            },
+        ],
+    },
+    "account_takeover": {
+        "title": "Select Account Takeover Type",
+        "description": "What kind of account takeover is this?",
+        "options": [
+            {
+                "label": "Unauthorized Login",
+                "value": "unauthorized_login",
+                "description": "Someone logged into my account without permission",
+            },
+            {
+                "label": "Unauthorized Message",
+                "value": "unauthorized_message",
+                "description": "Someone posted/messaged from my account",
+            },
+        ],
+    },
+}
 
 
 class Report:
-    START_KEYWORD = "report"
-    CANCEL_KEYWORD = "cancel"
-    HELP_KEYWORD = "help"
-
-    def __init__(self, client):
-        self.state = State.REPORT_START
+    def __init__(self, client, interaction, message):
         self.client = client
-        self.message = None
+        self.id = shortuuid.uuid()[:8]
+
         self.report_data = {
-            "reporter": None,
-            "reported_message": None,
-            "post_type": None,
+            "reported_message": message,
+            "interaction": interaction,
+            "message_link": (
+                f"https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}"
+            ),
+            "report_type": None,
             "fraud_type": None,
-            "phishing_type": None,
-            "investment_scam_type": None,
-            "ecommerce_type": None,
-            "account_takeover_type": None,
-            "blocked": False,
-            "moderated": False,
-            "moderation_action": None,
+            "subtype": None,
         }
-        self.last_bot_message = None
 
-    async def handle_message(self, message):
-        """
-        This function makes up the meat of the user-side reporting flow. It defines how we transition between states and what
-        prompts to offer at each of those states. You're welcome to change anything you want; this skeleton is just here to
-        get you started and give you a model for working with Discord.
-        """
+    async def show_report_view(self):
+        """Show the message being reported and walk the user through the report flow"""
+        embed = self.create_main_embed(self.report_data["reported_message"])
+        view = MainReportView(self)
+        await self.report_data["interaction"].response.send_message(embed=embed, view=view, ephemeral=True)
 
-        if message.content == self.CANCEL_KEYWORD:
-            self.state = State.REPORT_COMPLETE
-            return ["Report cancelled."]
-
-        if self.state == State.REPORT_START:
-            reply = "Thank you for starting the reporting process. "
-            reply += "Say `help` at any time for more information.\n\n"
-            reply += "Please copy paste the link to the message you want to report.\n"
-            reply += (
-                "You can obtain this link by right-clicking the message and clicking `Copy Message Link`."
-            )
-            self.state = State.AWAITING_MESSAGE
-            self.report_data["reporter"] = message.author
-            return [reply]
-
-        if self.state == State.AWAITING_MESSAGE:
-            # Parse out the three ID strings from the message link
-            m = re.search("/(\d+)/(\d+)/(\d+)", message.content)
-            if not m:
-                return ["I'm sorry, I couldn't read that link. Please try again or say `cancel` to cancel."]
-            guild = self.client.get_guild(int(m.group(1)))
-            if not guild:
-                return [
-                    "I cannot accept reports of messages from guilds that I'm not in. Please have the guild owner add me to the guild and try again."
-                ]
-            channel = guild.get_channel(int(m.group(2)))
-            if not channel:
-                return [
-                    "It seems this channel was deleted or never existed. Please try again or say `cancel` to cancel."
-                ]
-            try:
-                message = await channel.fetch_message(int(m.group(3)))
-            except discord.errors.NotFound:
-                return [
-                    "It seems this message was deleted or never existed. Please try again or say `cancel` to cancel."
-                ]
-
-            # Here we've found the message - it's up to you to decide what to do next!
-            self.message = message
-            self.report_data["reported_message"] = message
-            self.state = State.AWAITING_POST_TYPE
-
-            bot_message = await message.channel.send(
-                "Please select post type:\nReact with:\n1️⃣ for Fraud\n2️⃣ for Other"
-            )
-            self.last_bot_message = bot_message
-            await bot_message.add_reaction("1️⃣")
-            await bot_message.add_reaction("2️⃣")
-            return []
-
-        if self.state == State.AWAITING_POST_TYPE:
-            if message.content == "1️⃣":  # Fraud
-                self.report_data["post_type"] = "fraud"
-                self.state = State.AWAITING_FRAUD_TYPE
-                bot_message = await message.channel.send(
-                    "Please select fraud type:\nReact with:\n1️⃣ for Phishing\n2️⃣ for Investment Scam\n3️⃣ for E-Commerce\n4️⃣ for Account Takeover"
-                )
-                self.last_bot_message = bot_message
-                await bot_message.add_reaction("1️⃣")
-                await bot_message.add_reaction("2️⃣")
-                await bot_message.add_reaction("3️⃣")
-                await bot_message.add_reaction("4️⃣")
-                return []
-            elif message.content == "2️⃣":  # Other
-                self.report_data["post_type"] = "other"
-                self.state = State.AWAITING_OTHER_FRAUD_CHECK
-                bot_message = await message.channel.send(
-                    "Thanks for reporting to fraud bot. Do you believe this message is an attempt at fraud?\nReact with:\n1️⃣ for Yes\n2️⃣ for No"
-                )
-                self.last_bot_message = bot_message
-                await bot_message.add_reaction("1️⃣")
-                await bot_message.add_reaction("2️⃣")
-                return []
-
-        if self.state == State.AWAITING_OTHER_FRAUD_CHECK:
-            if message.content == "1️⃣":  # Yes
-                self.state = State.AWAITING_FRAUD_TYPE
-                bot_message = await message.channel.send(
-                    "Please select fraud type:\nReact with:\n1️⃣ for Phishing\n2️⃣ for Investment Scam\n3️⃣ for E-Commerce\n4️⃣ for Account Takeover"
-                )
-                self.last_bot_message = bot_message
-                await bot_message.add_reaction("1️⃣")
-                await bot_message.add_reaction("2️⃣")
-                await bot_message.add_reaction("3️⃣")
-                await bot_message.add_reaction("4️⃣")
-                return []
-            elif message.content == "2️⃣":  # No
-                self.state = State.REPORT_COMPLETE
-                return ["Thank you for your report. This is a fraud bot, so we can't help with this case."]
-
-        if self.state == State.AWAITING_FRAUD_TYPE:
-            if message.content == "1️⃣":  # Phishing
-                self.report_data["fraud_type"] = "phishing"
-                self.state = State.AWAITING_PHISHING_TYPE
-                bot_message = await message.channel.send(
-                    "Please select Phishing type:\nReact with:\n1️⃣ for Seeking Birthday, Name, or other Identifying Information\n2️⃣ for Seeking Location\n3️⃣ for Seeking Payment Information\n4️⃣ for Seeking SSN\n5️⃣ for Seeking Account Information"
-                )
-                self.last_bot_message = bot_message
-                await bot_message.add_reaction("1️⃣")
-                await bot_message.add_reaction("2️⃣")
-                await bot_message.add_reaction("3️⃣")
-                await bot_message.add_reaction("4️⃣")
-                await bot_message.add_reaction("5️⃣")
-                return []
-
-            elif message.content == "2️⃣":  # Investment Scam
-                self.report_data["fraud_type"] = "investment_scam"
-                self.state = State.AWAITING_INVESTMENT_SCAM_TYPE
-                bot_message = await message.channel.send(
-                    "Please select scam type:\nReact with:\n1️⃣ for Crypto\n2️⃣ for Selling Counterfeit Items\n3️⃣ for Other"
-                )
-                self.last_bot_message = bot_message
-                await bot_message.add_reaction("1️⃣")
-                await bot_message.add_reaction("2️⃣")
-                await bot_message.add_reaction("3️⃣")
-                return []
-
-            elif message.content == "3️⃣":  # E-Commerce
-                self.report_data["fraud_type"] = "ecommerce"
-                self.state = State.AWAITING_ECOMMERCE_TYPE
-                bot_message = await message.channel.send(
-                    "Please select e-commerce type:\nReact with:\n1️⃣ for Fake Online Store\n2️⃣ for Selling Counterfeit Items"
-                )
-                self.last_bot_message = bot_message
-                await bot_message.add_reaction("1️⃣")
-                await bot_message.add_reaction("2️⃣")
-                return []
-
-            elif message.content == "4️⃣":  # Account Takeover
-                self.report_data["fraud_type"] = "account_takeover"
-                self.state = State.AWAITING_ACCOUNT_TAKEOVER_TYPE
-                bot_message = await message.channel.send(
-                    "Please select takeover type:\nReact with:\n1️⃣ for Unauthorized Login\n2️⃣ for Unauthorized Post/Message from my account"
-                )
-                self.last_bot_message = bot_message
-                await bot_message.add_reaction("1️⃣")
-                await bot_message.add_reaction("2️⃣")
-                return []
-
-        if self.state in [
-            State.AWAITING_PHISHING_TYPE,
-            State.AWAITING_INVESTMENT_SCAM_TYPE,
-            State.AWAITING_ECOMMERCE_TYPE,
-        ]:
-            self.report_data["subcategory"] = message.content
-            self.state = State.AWAITING_BLOCK_DECISION
-            return await self.show_block_decision(message.channel)
-
-        if self.state == State.AWAITING_ACCOUNT_TAKEOVER_TYPE:
-            self.report_data["subcategory"] = message.content
-            self.state = State.AWAITING_BLOCK_DECISION
-            advisory = "We recommend changing your password and/or account email. Please follow these steps…"
-            block_decision = await self.show_block_decision(message.channel)
-            return [advisory] + block_decision
-
-        if self.state == State.AWAITING_BLOCK_DECISION:
-            if message.content == "1️⃣":  # Yes
-                self.report_data["blocked"] = True
-                self.state = State.REPORT_COMPLETE
-                return ["User has been blocked. Report completed."]
-            elif message.content == "2️⃣":  # No
-                self.state = State.REPORT_COMPLETE
-                return ["Report completed. Thank you for your report."]
-
-        return []
-
-    async def show_block_decision(self, channel):
-        bot_message = await channel.send(
-            "Thank you for reporting. Our content moderation team will review the account and/or post. Would you like to block the user?\nReact with:\n1️⃣ for Yes\n2️⃣ for No"
+    def create_main_embed(self, message):
+        """Create the main report embed"""
+        embed = discord.Embed(
+            title="Report a Message",
+            description="Please select a reason for reporting this message by clicking one of the buttons below.",
+            color=discord.Color.blue(),
         )
-        self.last_bot_message = bot_message
-        await bot_message.add_reaction("1️⃣")
-        await bot_message.add_reaction("2️⃣")
-        return []
 
-    def report_complete(self):
-        return self.state == State.REPORT_COMPLETE
+        # Show the profile picture of the reported user as thumbnail
+        embed.set_thumbnail(url=message.author.display_avatar.url if message.author.display_avatar else None)
 
-    def get_report_summary(self):
-        """Returns a formatted summary of the report for moderators"""
-        summary = f"Report from {self.report_data['reporter'].name}:\n"
-        if self.report_data["reported_message"] is not None:
-            summary += f"Reported Message: {self.report_data['reported_message'].content}\n"
+        # Add user information
+        embed.add_field(
+            name="Message Author",
+            inline=True,
+            value=f"{message.author.mention}",
+        )
+
+        # Add message content
+        message_content = message.content if message.content else "[No text content]"
+        if len(message_content) > 1024:
+            message_content = message_content[:1021] + "..."
+        message_content = f">>> {message_content}"
+        embed.add_field(name="Message Content", value=message_content, inline=False)
+
+        # Add footer with channel information
+        embed.set_footer(text=f"Sent in #{message.channel.name}")
+
+        # Add timestamp from the original message
+        embed.timestamp = message.created_at
+
+        return embed
+
+    async def submit_report_to_mods(self):
+        """Submit the completed report to moderators"""
+        # Get the guild ID from the original message
+        guild_id = self.report_data["reported_message"].guild.id
+
+        # Get the mod channel for this guild
+        mod_channel = self.client.mod_channels.get(guild_id)
+        if not mod_channel:
+            return  # Handle the case when mod channel is not set up
+
+        message = self.report_data["reported_message"]
+        reporter = self.report_data["interaction"].user
+
+        # Create an embed for moderators
+        embed = discord.Embed(
+            title=f"New Report",
+            description="",
+            color=discord.Color.red(),
+        )
+
+        # Add report details
+        if self.report_data.get("report_type") == "fraud":
+            embed.add_field(
+                name="Report Type",
+                value=f"Fraud ({self.report_data.get('fraud_type', 'unspecified')})",
+            )
+            if self.report_data.get("subtype"):
+                embed.add_field(name="Subtype", value=self.report_data.get("subtype"))
         else:
-            summary += "Reported Message: [No message provided]\n"
-        summary += f"Post Type: {self.report_data['post_type']}\n"
-        if self.report_data["fraud_type"]:
-            summary += f"Fraud Type: {self.report_data['fraud_type']}\n"
-        if self.report_data["phishing_type"]:
-            summary += f"Phishing Type: {self.report_data['phishing_type']}\n"
-        if self.report_data["investment_scam_type"]:
-            summary += f"Investment Scam Type: {self.report_data['investment_scam_type']}\n"
-        if self.report_data["ecommerce_type"]:
-            summary += f"E-Commerce Type: {self.report_data['ecommerce_type']}\n"
-        if self.report_data["account_takeover_type"]:
-            summary += f"Account Takeover Type: {self.report_data['account_takeover_type']}\n"
-        summary += f"User Blocked: {self.report_data['blocked']}\n"
-        return summary
+            embed.add_field(name="Report Type", value=self.report_data.get("report_type", "Other"))
 
-    def moderate(self, action):
-        """Handle moderation actions"""
-        self.report_data["moderated"] = True
-        self.report_data["moderation_action"] = action
-        return f"Moderation action taken: {action}"
+        # Add user information
+        embed.add_field(
+            name="Message Author",
+            value=f"{message.author.mention}",
+            inline=True,
+        )
+        embed.add_field(name="Channel", value=self.report_data["message_link"], inline=True)
+
+        # Add message content
+        message_content = message.content if message.content else "[No text content]"
+        if len(message_content) > 1024:
+            message_content = message_content[:1021] + "..."
+        message_content = f">>> {message_content}"
+        embed.add_field(name=f"Message Content", value=message_content, inline=False)
+
+        embed.add_field(name="Reported by", value=f"{reporter.mention}")
+        embed.set_footer(text=f"Report ID: {self.id}")
+        embed.timestamp = discord.utils.utcnow()
+
+        await mod_channel.send(embed=embed)
+
+    async def send_confirmation(self, interaction):
+        """Show confirmation message after report submission"""
+        embed = discord.Embed(
+            title="Report Submitted",
+            description="Thank you for your report. A moderator will review it shortly.",
+            color=discord.Color.green(),
+        )
+        await interaction.edit_original_response(embed=embed, view=None)
+
+
+class MainReportView(View):
+    def __init__(self, report):
+        super().__init__(timeout=300)  # 5 minute timeout
+        self.report = report
+
+    @discord.ui.button(label="Fraud", style=discord.ButtonStyle.primary)
+    async def fraud_button(self, interaction, button):
+        await interaction.response.defer(ephemeral=True)
+        self.report.report_data["report_type"] = "fraud"
+
+        # Create the fraud type selection embed
+        embed = discord.Embed(
+            title="Select Fraud Type",
+            description="What kind of fraud is this message attempting?",
+            color=discord.Color.orange(),
+        )
+
+        # Include a summary of the report so far
+        message = self.report.report_data["reported_message"]
+        embed.add_field(
+            name="Reporting Message",
+            value=f"From {message.author.mention} in {message.channel.mention}",
+            inline=False,
+        )
+
+        # Create fraud type view
+        view = SelectView(
+            report=self.report,
+            placeholder="Select fraud type...",
+            options=FRAUD_OPTIONS,
+            on_select=self.fraud_type_selected,
+            back_view_factory=MainReportView,
+        )
+
+        await interaction.edit_original_response(embed=embed, view=view)
+
+    @discord.ui.button(label="Other", style=discord.ButtonStyle.secondary)
+    async def other_button(self, interaction, button):
+        await interaction.response.defer(ephemeral=True)
+        self.report.report_data["report_type"] = "other"
+
+        # Submit the report and show confirmation
+        await self.report.submit_report_to_mods()
+        await self.report.send_confirmation(interaction)
+
+    async def fraud_type_selected(self, interaction, value):
+        """Handle fraud type selection"""
+        self.report.report_data["fraud_type"] = value
+
+        # If a valid fraud type was selected, show the corresponding subtype selection
+        if value in FRAUD_SUBTYPES:
+            subtype_config = FRAUD_SUBTYPES[value]
+
+            embed = discord.Embed(
+                title=subtype_config["title"],
+                description=subtype_config["description"],
+                color=discord.Color.orange(),
+            )
+
+            # Create the subtype selection view
+            view = SelectView(
+                report=self.report,
+                placeholder=f"Select {value.replace('_', ' ')} type...",
+                options=subtype_config["options"],
+                on_select=self.subtype_selected,
+                back_view_factory=lambda report: SelectView(
+                    report=report,
+                    placeholder="Select fraud type...",
+                    options=FRAUD_OPTIONS,
+                    on_select=self.fraud_type_selected,
+                    back_view_factory=MainReportView,
+                ),
+                field_name="subtype",
+            )
+
+            await interaction.edit_original_response(embed=embed, view=view)
+        else:
+            # Submit the report directly if no subtypes are defined
+            await self.report.submit_report_to_mods()
+            await self.report.send_confirmation(interaction)
+
+    async def subtype_selected(self, interaction, value):
+        """Handle subtype selection"""
+        # Submit the report and show confirmation
+        await self.report.submit_report_to_mods()
+        await self.report.send_confirmation(interaction)
+
+
+class SelectView(View):
+    """
+    A generic selection view that can be used for any type of selection.
+    This replaces the numerous specific selection views in the original code.
+    """
+
+    def __init__(
+        self,
+        report,
+        placeholder,
+        options,
+        on_select,
+        back_view_factory,
+        field_name="fraud_type",
+    ):
+        super().__init__(timeout=300)  # 5 minute timeout
+        self.report = report
+        self.on_select = on_select
+        self.back_view_factory = back_view_factory
+        self.field_name = field_name
+
+        # Add the select menu
+        select_options = [
+            SelectOption(label=option["label"], value=option["value"], description=option["description"])
+            for option in options
+        ]
+
+        select = Select(placeholder=placeholder, options=select_options, row=0)
+        select.callback = self.select_callback
+        self.add_item(select)
+
+        # Add back button
+        back_button = Button(label="← Back", style=discord.ButtonStyle.secondary, row=1)
+        back_button.callback = self.back_button_callback
+        self.add_item(back_button)
+
+    async def select_callback(self, interaction):
+        await interaction.response.defer(ephemeral=True)
+
+        # Get the selected value
+        value = interaction.data["values"][0]
+
+        # Call the provided callback with the selected value
+        await self.on_select(interaction, value)
+
+    async def back_button_callback(self, interaction):
+        await interaction.response.defer(ephemeral=True)
+
+        # Clear the current field selection
+        if self.field_name in self.report.report_data:
+            del self.report.report_data[self.field_name]
+
+        # If going back from a subtype to fraud type selection
+        if self.field_name == "subtype" and "fraud_type" in self.report.report_data:
+            # Create the fraud type selection embed
+            embed = discord.Embed(
+                title="Select Fraud Type",
+                description="What kind of fraud is this message attempting?",
+                color=discord.Color.orange(),
+            )
+
+            # Include a summary of the report so far
+            message = self.report.report_data["reported_message"]
+            embed.add_field(
+                name="Reporting Message",
+                value=f"From {message.author.mention} in {message.channel.mention}",
+                inline=False,
+            )
+        else:
+            # Create the main report embed again
+            message = self.report.report_data["reported_message"]
+            embed = self.report.create_main_embed(message)
+
+        # Create the appropriate back view using the provided factory
+        view = self.back_view_factory(self.report)
+
+        # Edit the original message to show the previous view
+        await interaction.edit_original_response(embed=embed, view=view)
