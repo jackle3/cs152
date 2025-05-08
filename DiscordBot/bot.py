@@ -27,7 +27,7 @@ class ModBot(commands.Bot):
 
         self.group_num = None
         self.mod_channels = {}  # Map from guild to the mod channel id for that guild
-        self.reports = defaultdict(dict)  # Maps from a user ID to their reports dictionary
+        self.active_reports = {}  # Maps from (report_id) to (user_id, report_object)
 
     async def setup_hook(self):
         """This executes when the bot is starting up"""
@@ -74,7 +74,7 @@ class ModBot(commands.Bot):
 
         # Create a new Report object and add it to the reports dictionary
         report = Report(self, interaction, message)
-        self.reports[interaction.user.id][report.id] = report
+        self.active_reports[report.id] = (interaction.user.id, report)
         await report.show_report_view()
 
 
