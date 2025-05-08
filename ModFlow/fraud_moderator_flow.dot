@@ -1,0 +1,95 @@
+digraph FraudModeratorFlow {
+  rankdir=TB;
+  node [shape=box, style="rounded,filled", fontname=Helvetica, fontsize=11];
+  edge [arrowhead=vee, fontname=Helvetica, fontsize=10];
+
+  /* Incoming Detection Sources */
+  subgraph cluster_detection {
+    label="Initial Detection";
+    style=dashed;
+    color=grey;
+    
+    UserReport     [fillcolor=lightblue, label="User Report\n– Direct reports \n– Channel message flag\n– DM to moderator"];
+
+  }
+
+  /* Triage and Classification */
+  subgraph cluster_triage {
+    label="Moderator Reception";
+    style=dashed;
+    color=grey;
+    
+    ReviewQueue       [fillcolor=white, label="Moderator Dashboard\n– Prioritized / sorted by severity"];
+    
+    SeverityAssess    [fillcolor=white, label="For Each: Assess Severity\n– Number of targets\n– Financial impact\n– Repeat offender"];
+  }
+
+  /* Investigation Tools */
+  subgraph cluster_investigation {
+    label="Investigation";
+    style=dashed;
+    color=grey;
+    
+    Investigate       [fillcolor=white, label="Investigate Evidence\n– Chat history analysis\n– Attachment scanning\n– Link verification\n– Account history check"];
+    
+    PatternMatch      [fillcolor=white, label="Pattern Matching\n– Compare to known scams\n– Check for similar cases\n– Search message patterns"];
+    
+    TrustScore        [fillcolor=white, label="Trust Scoring\n– Account age metrics\n– Server participation\n– Verification level\n– Previous warnings"];
+  }
+
+  /* Decision Points */
+  ValidDecision       [shape=diamond, fillcolor=lightyellow, label="Valid Fraud?"];
+  EscalateDecision    [shape=diamond, fillcolor=lightyellow, label="Need\nEscalation?"];
+  
+  /* Actions */
+  ContentRemoval      [fillcolor=lightpink, label="Remove Content\n– Delete messages\n– Remove attachments\n– Block links serverwide"];
+  
+  UserAction          [fillcolor=lightpink, label="User Actions\n– Warning\n– Timeout (1h-28d)\n– Kick\n– Ban"];
+  
+  UpdateSystems       [fillcolor=lightgreen, label="Update Systems\n– Add keywords to AutoMod\n– Flag domains in filter\n– Update scam patterns"];
+  
+  EscalateTeam        [fillcolor=salmon, label="Escalate to Senior Team\n– Complex fraud networks\n– Large-scale operations\n– Repeat sophisticated actors"];
+  
+  LawEnforcement      [fillcolor=salmon, label="External Reporting\n– Discord Trust & Safety\n– IC3/FBI reporting\n– Financial authorities"];
+  
+  /* Resolution */
+  DocumentCase        [fillcolor=lightgreen, label="Document Case\n– Record evidence\n– Document actions taken\n– Update scam database"];
+  
+  NotifyParties       [fillcolor=lightgreen, label="Notify Stakeholders\n– Inform reporter\n– Alert targeted users\n– Update mod team"];
+  
+  RejectReport        [fillcolor=lightgrey, label="Dismiss Report\n– Log decision\n– Notify reporter\n– Add to training data"];
+
+  /* Edge Connections */
+  UserReport     -> ReviewQueue;
+  
+  ReviewQueue    -> SeverityAssess;
+  SeverityAssess -> Investigate;
+  
+  Investigate    -> PatternMatch;
+  PatternMatch   -> TrustScore;
+  TrustScore     -> ValidDecision;
+  
+  ValidDecision  -> RejectReport [label="No"];
+  ValidDecision  -> ContentRemoval [label="Yes"];
+  
+  ContentRemoval -> UserAction;
+  UserAction     -> UpdateSystems;
+  UpdateSystems  -> EscalateDecision;
+  
+  EscalateDecision -> DocumentCase [label="No"];
+  EscalateDecision -> EscalateTeam [label="Yes\n(Complex)"];
+  
+  EscalateTeam   -> LawEnforcement [label="If criminal"];
+  EscalateTeam   -> DocumentCase;
+  LawEnforcement -> DocumentCase;
+  
+  DocumentCase   -> NotifyParties;
+  RejectReport   -> NotifyParties [style=dashed];
+  
+  /* Education and Prevention Feedback Loop */
+  NotifyParties  -> UserEducation [style=dotted];
+  UserEducation  [fillcolor=lightcyan, label="User Education\n– Scam awareness\n– Safety resources\n– Prevention tips"];
+  UserEducation  -> PreventiveMeasures [style=dotted];
+  PreventiveMeasures [fillcolor=lightcyan, label="Preventive Measures\n– AutoMod rule updates\n– Channel permissions"];
+  PreventiveMeasures -> UserReport [style=dotted, constraint=false];
+}
