@@ -8,6 +8,7 @@ import logging
 import re
 from report import Report
 from collections import defaultdict
+from utils import ABUSE_TYPES
 
 # Set up logging to the console
 logger = logging.getLogger("discord")
@@ -28,6 +29,7 @@ class ModBot(commands.Bot):
         self.group_num = None
         self.mod_channels = {}  # Map from guild to the mod channel id for that guild
         self.active_reports = {}  # Maps from (report_id) to (user_id, report_object)
+        self.report_messages = {}  # Maps from report_id to the message in mod channel
 
     async def setup_hook(self):
         """This executes when the bot is starting up"""

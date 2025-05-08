@@ -1,8 +1,9 @@
 import discord
-from discord.ui import View, Button, Select
-from discord import SelectOption
+from discord.ui import View, Button, Select, Modal, TextInput
+from discord import SelectOption, ButtonStyle
 import shortuuid
-from utils import FRAUD_FLOW, quote_message
+from utils import ABUSE_TYPES, quote_message, REPORT_CONFIRMATION_MESSAGE
+from moderator import ModeratorActionView
 
 
 class Report:
@@ -16,14 +17,17 @@ class Report:
             "interaction": interaction,
             "message_link": message_link,
             "report_type": None,
-            "fraud_type": None,
-            "subtype": None,
+            "abuse_category": None,
+            "subtypes": [],  # List to store the chain of subtypes
+            "additional_info": None,  # Optional additional information
+            "history": [],  # List to store the history of views for back navigation
         }
 
     async def show_report_view(self):
         """Show the message being reported and walk the user through the report flow"""
         embed = self.create_main_embed(self.report_data["reported_message"])
         view = MainReportView(self)
+        self.report_data["history"].append(("main", embed, view))
         await self.report_data["interaction"].response.send_message(embed=embed, view=view, ephemeral=True)
 
     def create_main_embed(self, message):
@@ -48,23 +52,33 @@ class Report:
         message = self.report_data["reported_message"]
         reporter = self.report_data["interaction"].user
 
-        # Add report details
-        if self.report_data.get("report_type") == "fraud":
-            fraud_type = self.report_data.get("fraud_type", "unspecified")
-            fraud_type_str = FRAUD_FLOW[fraud_type]["label"]
-            embed.add_field(name="Report Type", value=f"Fraud ({fraud_type_str})")
-            if self.report_data.get("subtype"):
-                subtype = self.report_data.get("subtype", "unspecified")
-                subtype_options = FRAUD_FLOW[fraud_type]["subtypes"]["options"]
-                subtype_str = subtype_options[subtype]["label"]
-                embed.add_field(name="Subtype", value=subtype_str)
+        # Add report details based on abuse type
+        abuse_category = self.report_data.get("abuse_category")
+        if abuse_category and abuse_category in ABUSE_TYPES:
+            abuse_type = ABUSE_TYPES[abuse_category]
+            embed.add_field(name="Report Type", value=abuse_type.label)
+
+            # Add all subtypes in the chain
+            current_type = abuse_type
+            for subtype_key in self.report_data["subtypes"]:
+                if current_type.subtypes and subtype_key in current_type.subtypes:
+                    subtype = current_type.subtypes[subtype_key]
+                    embed.add_field(name="Subtype", value=subtype.label)
+                    current_type = subtype
+
         else:
+            # Fallback
             embed.add_field(name="Report Type", value=self.report_data.get("report_type", "Other"))
 
         embed.add_field(name="Message Author", value=f"{message.author.mention}", inline=True)
         embed.add_field(name="Channel", value=self.report_data["message_link"], inline=True)
         embed.add_field(name="Message Content", value=quote_message(message), inline=False)
         embed.add_field(name="Reported by", value=f"{reporter.mention}")
+        
+        # Add additional information if provided
+        if self.report_data.get("additional_info"):
+            embed.add_field(name="Additional Information", value=self.report_data["additional_info"], inline=False)
+            
         embed.set_footer(text=f"Report ID: {self.id}")
         embed.timestamp = discord.utils.utcnow()
 
@@ -81,7 +95,9 @@ class Report:
         embed = discord.Embed(title="New Report", description="", color=discord.Color.red())
         self.add_report_details(embed)
 
-        await mod_channel.send(embed=embed)
+        # Send to mod channel with appropriate action buttons
+        view = ModeratorActionView(self)
+        await mod_channel.send(embed=embed, view=view)
         await self.send_dm_confirmation()
 
     async def send_dm_confirmation(self):
@@ -100,34 +116,103 @@ class Report:
 
     async def send_confirmation(self, interaction):
         """Show confirmation message after report submission"""
-        message = """Thank you for your report. Our content moderation team will review it shortly and update you via a private message if necessary.
-        
-        In the meantime, you may wish to block the message author to stop future messages from appearing in your view."""
-
-        if self.report_data.get("fraud_type") == "account_takeover":
-            message = """Thank you for your report. Our moderation team will review it shortly and update you via a private message if necessary.
-            
-            We recommend you change your password and enable two-factor authentication if you have not already done so."""
-
-        embed = discord.Embed(title="Report Submitted", description=message, color=discord.Color.green())
+        embed = discord.Embed(title="Report Submitted", description=REPORT_CONFIRMATION_MESSAGE, color=discord.Color.green())
         await interaction.edit_original_response(embed=embed, view=None)
 
+    async def go_back(self, interaction):
+        """Go back to the previous view in the history"""
+        if len(self.report_data["history"]) > 1:
+            # Remove current view
+            self.report_data["history"].pop()
+            
+            # Get previous view
+            _, embed, view = self.report_data["history"][-1]
+            
+            # If going back from subtype selection, remove the last subtype
+            if self.report_data["subtypes"]:
+                self.report_data["subtypes"].pop()
+            
+            await interaction.response.edit_message(embed=embed, view=view)
 
-class MainReportView(View):
-    def __init__(self, report):
-        super().__init__(timeout=300)  # 5 minute timeout
+
+class BaseView(View):
+    """Base view class with back button functionality"""
+    
+    def __init__(self, report, timeout=300):
+        super().__init__(timeout=timeout)
         self.report = report
+        self._add_back_button()
 
-    @discord.ui.button(label="Fraud", style=discord.ButtonStyle.primary)
-    async def fraud_button(self, interaction, button):
-        await interaction.response.defer(ephemeral=True)
-        self.report.report_data["report_type"] = "fraud"
+    def _add_back_button(self):
+        """Add a back button to the view"""
+        back_button = Button(
+            label="Back",
+            style=ButtonStyle.secondary,
+            row=4,  # Always on the last row
+            custom_id="back"
+        )
+        back_button.callback = self._back_callback
+        self.add_item(back_button)
 
-        # Create the fraud type selection embed
+    async def _back_callback(self, interaction):
+        """Handle back button click"""
+        await self.report.go_back(interaction)
+
+
+class MainReportView(BaseView):
+    def __init__(self, report):
+        super().__init__(report)
+        self._add_abuse_buttons()
+
+    def _add_abuse_buttons(self):
+        """Add buttons for each abuse type in the ABUSE_TYPES dictionary"""
+        # Add a button for each abuse type, using a consistent blue style for all
+        for i, (key, abuse_type) in enumerate(ABUSE_TYPES.items()):
+            # Calculate row based on position
+            row = i // 3
+
+            # Create a button with blue style
+            button = Button(
+                label=abuse_type.label,
+                style=ButtonStyle.primary,  # Blue for all options
+                row=row,
+                custom_id=f"abuse_type_{key}",
+            )
+
+            # Set the callback
+            button.callback = self._create_abuse_button_callback(key)
+
+            # Add the button to the view
+            self.add_item(button)
+
+    def _create_abuse_button_callback(self, abuse_type_key):
+        """Create a callback for the abuse type button"""
+
+        async def callback(interaction):
+            await interaction.response.defer(ephemeral=True)
+            abuse_type = ABUSE_TYPES[abuse_type_key]
+
+            # Set the report data
+            self.report.report_data["abuse_category"] = abuse_type_key
+            self.report.report_data["report_type"] = abuse_type.label
+
+            # Handle direct reports (no subtypes)
+            if not abuse_type.subtypes:
+                await self._show_additional_info_prompt(interaction)
+                return
+
+            # Handle subtypes
+            await self._handle_subtype_selection(interaction, abuse_type_key, abuse_type)
+            return
+
+        return callback
+
+    async def _handle_subtype_selection(self, interaction, abuse_type_key, abuse_type):
+        """Handle subtype selection for any abuse type with subtypes"""
         embed = discord.Embed(
-            title="Select Fraud Type",
-            description="What kind of fraud is this message attempting?",
-            color=discord.Color.orange(),
+            title=f"Select {abuse_type.label} Type",
+            description=f"What kind of {abuse_type.label.lower()} is this?",
+            color=discord.Color.blue(),
         )
 
         # Include a summary of the report so far
@@ -138,71 +223,145 @@ class MainReportView(View):
             inline=False,
         )
 
-        # Create fraud type view
+        # Create subtype view
         view = SelectView(
             report=self.report,
-            placeholder="Select fraud type...",
-            options=FRAUD_FLOW,
-            field_name="fraud_type",
-            on_select=self.fraud_type_selected,
-        )
-
-        await interaction.edit_original_response(embed=embed, view=view)
-
-    @discord.ui.button(label="Other", style=discord.ButtonStyle.secondary)
-    async def other_button(self, interaction, button):
-        await interaction.response.defer(ephemeral=True)
-        self.report.report_data["report_type"] = "other"
-
-        # Submit the report and show confirmation
-        await self.report.submit_report_to_mods()
-        await self.report.send_confirmation(interaction)
-
-    async def fraud_type_selected(self, interaction, value):
-        """Handle fraud type selection"""
-        fraud_config = FRAUD_FLOW[value]
-        subtype_config = fraud_config["subtypes"]
-
-        embed = discord.Embed(
-            title=subtype_config["title"],
-            description=subtype_config["description"],
-            color=discord.Color.orange(),
-        )
-
-        # Create the subtype selection view
-        view = SelectView(
-            report=self.report,
-            placeholder=f"Select {fraud_config['label'].lower()} type...",
-            options=subtype_config["options"],
-            field_name="subtype",
+            placeholder=f"Select {abuse_type.label.lower()} type...",
+            options=abuse_type.subtypes,
             on_select=self.subtype_selected,
+            parent_type=abuse_type_key,
         )
 
+        # Add to history
+        self.report.report_data["history"].append(("subtype", embed, view))
         await interaction.edit_original_response(embed=embed, view=view)
 
-    async def subtype_selected(self, interaction, value):
-        """Handle subtype selection"""
+    async def subtype_selected(self, interaction, value, parent_type=None):
+        """Handle subtype selection recursively"""
+        # Add the selected subtype to the chain
+        self.report.report_data["subtypes"].append(value)
+
+        # Get the current type in the chain
+        current_type = ABUSE_TYPES[parent_type]
+        for subtype_key in self.report.report_data["subtypes"]:
+            if current_type.subtypes and subtype_key in current_type.subtypes:
+                current_type = current_type.subtypes[subtype_key]
+
+        # If this type has further subtypes, show another selection
+        if current_type.subtypes:
+            embed = discord.Embed(
+                title=f"Select {current_type.label} Details",
+                description=f"Please provide more specific details about this {current_type.label.lower()}.",
+                color=discord.Color.blue(),
+            )
+
+            view = SelectView(
+                report=self.report,
+                placeholder=f"Select specific details...",
+                options=current_type.subtypes,
+                on_select=self.subtype_selected,
+                parent_type=parent_type,
+            )
+
+            # Add to history
+            self.report.report_data["history"].append(("subtype", embed, view))
+            await interaction.edit_original_response(embed=embed, view=view)
+            return
+
+        # If no further subtypes, show additional info prompt
+        await self._show_additional_info_prompt(interaction)
+
+    async def _show_additional_info_prompt(self, interaction):
+        """Show prompt for additional information"""
+        embed = discord.Embed(
+            title="Additional Information",
+            description="Would you like to provide any additional information about this report?",
+            color=discord.Color.blue(),
+        )
+        
+        view = AdditionalInfoView(self.report)
+        
+        # Add to history
+        self.report.report_data["history"].append(("info", embed, view))
+        await interaction.edit_original_response(embed=embed, view=view)
+
+
+class AdditionalInfoView(BaseView):
+    """View for handling additional information input"""
+    
+    def __init__(self, report):
+        super().__init__(report)
+        
+        # Add buttons
+        add_info_button = Button(
+            label="Add Information",
+            style=ButtonStyle.primary,
+            custom_id="add_info"
+        )
+        add_info_button.callback = self._add_info_callback
+        self.add_item(add_info_button)
+        
+        skip_button = Button(
+            label="Skip",
+            style=ButtonStyle.secondary,
+            custom_id="skip_info"
+        )
+        skip_button.callback = self._skip_callback
+        self.add_item(skip_button)
+
+    async def _add_info_callback(self, interaction):
+        """Handle add info button click"""
+        modal = AdditionalInfoModal(self.report)
+        await interaction.response.send_modal(modal)
+
+    async def _skip_callback(self, interaction):
+        """Handle skip button click"""
+        await interaction.response.defer(ephemeral=True)
         await self.report.submit_report_to_mods()
         await self.report.send_confirmation(interaction)
 
 
-class SelectView(View):
+class AdditionalInfoModal(Modal):
+    """Modal for submitting additional information"""
+    
+    def __init__(self, report):
+        super().__init__(title="Additional Information")
+        self.report = report
+        
+        self.info = TextInput(
+            label="Additional Information",
+            placeholder="Please provide any additional context or information that might help moderators...",
+            style=discord.TextStyle.paragraph,
+            required=True,
+        )
+        self.add_item(self.info)
+
+    async def on_submit(self, interaction):
+        """Handle submission of additional information"""
+        await interaction.response.defer(ephemeral=True)
+        
+        # Store the additional information
+        self.report.report_data["additional_info"] = self.info.value
+        
+        # Submit the report
+        await self.report.submit_report_to_mods()
+        await self.report.send_confirmation(interaction)
+
+
+class SelectView(BaseView):
     """
     A generic selection view that can be used for any type of selection.
     """
 
-    def __init__(self, report, placeholder, options, field_name, on_select):
-        super().__init__(timeout=300)  # 5 minute timeout
-        self.report = report
+    def __init__(self, report, placeholder, options, on_select, parent_type=None):
+        super().__init__(report)
         self.on_select = on_select
-        self.field_name = field_name
+        self.parent_type = parent_type
 
         # Add the select menu
         select_options = []
         for key, value in options.items():
-            select_options.append(
-                SelectOption(label=value["label"], value=key, description=value["description"])
-            )
+            select_options.append(SelectOption(label=value.label, value=key, description=value.description))
 
         select = Select(placeholder=placeholder, options=select_options, row=0)
         select.callback = self.select_callback
@@ -212,5 +371,4 @@ class SelectView(View):
         await interaction.response.defer(ephemeral=True)
 
         value = interaction.data["values"][0]
-        self.report.report_data[self.field_name] = value
-        await self.on_select(interaction, value)
+        await self.on_select(interaction, value, self.parent_type)
