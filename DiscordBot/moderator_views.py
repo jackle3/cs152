@@ -1,8 +1,8 @@
 import discord
-from discord.ui import View, Button, Select, Modal, TextInput
-from discord import SelectOption, ButtonStyle
+from discord.ui import View, Button, Modal, TextInput
+from discord import ButtonStyle
 import logging
-from helpers import ABUSE_TYPES, quote_message
+from helpers import add_report_details_to_embed
 from datetime import timedelta
 
 logger = logging.getLogger("discord")
@@ -80,8 +80,15 @@ class ActionSelectView(View):
         async def callback(interaction):
             await interaction.response.defer()
 
+            # Check if report is still active
+            if not self.report.active:
+                await interaction.followup.send(
+                    "❌ This report has already been acted upon by another moderator.", ephemeral=True
+                )
+                return
+
             # Get the reported user
-            reported_user = self.report.report_data["reported_message"].author
+            reported_user = self.report.reported_message.author
 
             # Take the action
             if action_id == "warn":
@@ -93,13 +100,16 @@ class ActionSelectView(View):
             elif action_id == "ban":
                 await self._ban_user(reported_user)
 
+            # Mark report as inactive
+            self.report.active = False
+
             # Send confirmation in the mod thread
             await interaction.followup.send(
                 f"✅ {interaction.user.mention} has taken action {action_id} against {reported_user.mention}"
             )
 
             # Send action notification to the report thread with action-specific messages
-            report_thread = self.report.report_data["report_thread"]
+            report_thread = self.report.report_thread
 
             action_messages = {
                 "warn": "The reported user has been warned about their behavior.",
@@ -125,35 +135,6 @@ class ActionSelectView(View):
 
         return callback
 
-    def _add_report_details_to_embed(self, embed):
-        """Add report details to an embed"""
-        report_data = self.report.report_data
-        reported_message = report_data["reported_message"]
-
-        # Add report type and category
-        if report_data.get("abuse_category"):
-            abuse_type = ABUSE_TYPES[report_data["abuse_category"]]
-            embed.add_field(name="Report Type", value=abuse_type.label, inline=False)
-
-            # Add subtypes if any
-            current_type = abuse_type
-            for subtype_key in report_data["subtypes"]:
-                if current_type.subtypes and subtype_key in current_type.subtypes:
-                    subtype = current_type.subtypes[subtype_key]
-                    embed.add_field(name="Subtype", value=subtype.label, inline=False)
-                    current_type = subtype
-
-        # Add message content using quote_message helper
-        embed.add_field(name="Reported Message", value=quote_message(reported_message), inline=False)
-
-        # Add channel information with proper mention
-        embed.add_field(name="Channel", value=reported_message.channel.mention, inline=False)
-
-        # Add timestamp
-        embed.timestamp = discord.utils.utcnow()
-
-        return embed
-
     async def _warn_user(self, user):
         """Send a warning to the user"""
         try:
@@ -162,7 +143,7 @@ class ActionSelectView(View):
                 description="You have received a warning for violating our community guidelines.",
                 color=discord.Color.yellow(),
             )
-            self._add_report_details_to_embed(embed)
+            add_report_details_to_embed(embed, self.report, hide_reporter=True)
             await user.send(embed=embed)
         except discord.Forbidden:
             pass  # User has DMs disabled
@@ -176,7 +157,7 @@ class ActionSelectView(View):
                 description="You have been timed out for 24 hours for violating our community guidelines.",
                 color=discord.Color.orange(),
             )
-            self._add_report_details_to_embed(embed)
+            add_report_details_to_embed(embed, self.report, hide_reporter=True)
             await user.send(embed=embed)
         except discord.Forbidden:
             pass  # User has DMs disabled
@@ -190,7 +171,7 @@ class ActionSelectView(View):
                 description="You have been kicked from the server for violating our community guidelines.",
                 color=discord.Color.red(),
             )
-            self._add_report_details_to_embed(embed)
+            add_report_details_to_embed(embed, self.report, hide_reporter=True)
             await user.send(embed=embed)
         except discord.Forbidden:
             pass  # Bot doesn't have kick permissions
@@ -204,7 +185,7 @@ class ActionSelectView(View):
                 description="You have been banned from the server for violating our community guidelines.",
                 color=discord.Color.red(),
             )
-            self._add_report_details_to_embed(embed)
+            add_report_details_to_embed(embed, self.report, hide_reporter=True)
             await user.send(embed=embed)
         except discord.Forbidden:
             pass  # Bot doesn't have ban permissions or user has DMs disabled
@@ -229,17 +210,27 @@ class DismissalReasonModal(Modal):
         """Handle submission of dismissal reason"""
         await interaction.response.defer()
 
+        # Check if report is still active
+        if not self.report.active:
+            await interaction.followup.send(
+                "❌ This report has already been acted upon by another moderator.", ephemeral=True
+            )
+            return
+
+        # Mark report as inactive
+        self.report.active = False
+
         # Send dismissal confirmation in the mod thread
         await interaction.followup.send(
             f"❌ {interaction.user.mention} has dismissed this report.\nReason: {self.reason.value}"
         )
 
         # Send dismissal notification to the report thread
-        report_thread = self.report.report_data["report_thread"]
+        report_thread = self.report.report_thread
         await report_thread.send(
             embed=discord.Embed(
                 title="Report Dismissed",
                 description=f"Your report has been dismissed.\nReason: {self.reason.value}",
-                color=discord.Color.grey(),
+                color=discord.Color.red(),
             )
         )

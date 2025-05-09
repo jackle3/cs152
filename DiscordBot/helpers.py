@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any
+import discord
 
 
 def quote_message(message):
@@ -203,9 +204,59 @@ ABUSE_TYPES = {
 # Standard confirmation message for all reports
 REPORT_CONFIRMATION_MESSAGE = """Thank you for helping keep our community safe. Our moderation team will review your report and take appropriate action.
 
-To protect yourself from unwanted interactions, you can block the reported user. If you believe your account security may be compromised, we strongly recommend:
-• Changing your account password
-• Updating your account email
-• Enabling two-factor authentication
+To protect yourself from unwanted interactions, you can block the reported user.
+
+If you believe your account security may be compromised, we strongly recommend:
+  - Changing your account password
+  - Updating your account email
+  - Enabling two-factor authentication
 
 We will notify you via private message once we have reviewed your report."""
+
+
+def add_report_details_to_embed(embed, report, hide_reporter=False, hide_additional_info=False):
+    """Add report details to an embed
+
+    Args:
+        embed: The discord.Embed to add details to
+        report: Report object containing report information
+        hide_reporter: If True, don't show who reported the message
+        hide_additional_info: If True, don't show additional information
+    """
+    message = report.reported_message
+    reporter = report.interaction.user
+
+    # Add the reported user's profile picture as thumbnail
+    embed.set_thumbnail(url=message.author.display_avatar.url if message.author.display_avatar else None)
+
+    # Add report details based on abuse type
+    if report.abuse_category and report.abuse_category in ABUSE_TYPES:
+        abuse_type = ABUSE_TYPES[report.abuse_category]
+        embed.add_field(name="Report Type", value=abuse_type.label)
+
+        # Add all subtypes in the chain
+        current_type = abuse_type
+        for subtype_key in report.subtypes:
+            if current_type.subtypes and subtype_key in current_type.subtypes:
+                subtype = current_type.subtypes[subtype_key]
+                embed.add_field(name="Subtype", value=subtype.label)
+                current_type = subtype
+    else:
+        # Fallback
+        embed.add_field(name="Report Type", value=report.report_type or "Other")
+
+    embed.add_field(name="Message Author", value=message.author.mention, inline=True)
+    embed.add_field(name="Channel", value=message.jump_url, inline=True)
+    embed.add_field(name="Message Content", value=quote_message(message), inline=False)
+
+    if not hide_reporter:
+        embed.add_field(name="Reported by", value=reporter.mention)
+
+    # Add additional information if provided and not hidden
+    if not hide_additional_info and report.additional_info:
+        embed.add_field(name="Additional Information", value=report.additional_info, inline=False)
+
+    embed.set_footer(text=f"Report ID: {report.id}")
+    embed.timestamp = discord.utils.utcnow()
+
+    return embed

@@ -14,13 +14,13 @@ class MainReportView(View):
         """Add buttons for each abuse type in the ABUSE_TYPES dictionary"""
         # Add a button for each abuse type, using a consistent blue style for all
         for i, (key, abuse_type) in enumerate(ABUSE_TYPES.items()):
-            # Calculate row based on position
-            row = i // 3
+            # Four buttons per row (we have 8 buttons total right now)
+            row = i // 4
 
-            # Create a button with blue style
+            button_color = ButtonStyle.primary if key != "other" else ButtonStyle.secondary
             button = Button(
                 label=abuse_type.label,
-                style=ButtonStyle.primary,  # Blue for all options
+                style=button_color,
                 row=row,
                 custom_id=f"abuse_type_{key}",
             )
@@ -39,8 +39,8 @@ class MainReportView(View):
             abuse_type = ABUSE_TYPES[abuse_type_key]
 
             # Set the report data
-            self.report.report_data["abuse_category"] = abuse_type_key
-            self.report.report_data["report_type"] = abuse_type.label
+            self.report.abuse_category = abuse_type_key
+            self.report.report_type = abuse_type.label
 
             # Handle direct reports (no subtypes)
             if not abuse_type.subtypes:
@@ -62,7 +62,7 @@ class MainReportView(View):
         )
 
         # Include a summary of the report so far
-        message = self.report.report_data["reported_message"]
+        message = self.report.reported_message
         embed.add_field(
             name="Reporting Message",
             value=f"From {message.author.mention} in {message.channel.mention}",
@@ -83,11 +83,11 @@ class MainReportView(View):
     async def subtype_selected(self, interaction, value, parent_type=None):
         """Handle subtype selection recursively"""
         # Add the selected subtype to the chain
-        self.report.report_data["subtypes"].append(value)
+        self.report.subtypes.append(value)
 
         # Get the current type in the chain
         current_type = ABUSE_TYPES[parent_type]
-        for subtype_key in self.report.report_data["subtypes"]:
+        for subtype_key in self.report.subtypes:
             if current_type.subtypes and subtype_key in current_type.subtypes:
                 current_type = current_type.subtypes[subtype_key]
 
@@ -172,7 +172,7 @@ class AdditionalInfoModal(Modal):
         await interaction.response.defer()
 
         # Store the additional information
-        self.report.report_data["additional_info"] = self.info.value
+        self.report.additional_info = self.info.value
 
         # Submit the report
         await self.report.submit_report_to_mods()

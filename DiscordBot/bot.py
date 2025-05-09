@@ -27,7 +27,6 @@ class ModBot(commands.Bot):
         self.group_num = None
         self.mod_channels = {}  # Map from guild to the mod channel id for that guild
         self.active_reports = {}  # Maps from (report_id) to (user_id, report_object)
-        self.report_messages = {}  # Maps from report_id to the message in mod channel
 
     async def setup_hook(self):
         """This executes when the bot is starting up"""
@@ -46,10 +45,10 @@ class ModBot(commands.Bot):
         logger.info("Context menu commands synced with Discord")
 
     async def on_ready(self):
-        print(f"{self.user.name} has connected to Discord! It is these guilds:")
+        logger.info(f"{self.user.name} has connected to Discord! It is these guilds:")
         for guild in self.guilds:
-            print(f" - {guild.name}")
-        print("Press Ctrl-C to quit.")
+            logger.info(f" - {guild.name}")
+        logger.info("Press Ctrl-C to quit.")
 
         # Parse the group number out of the bot's name
         match = re.search(r"[gG]roup (\d+) [bB]ot", self.user.name)
@@ -68,9 +67,7 @@ class ModBot(commands.Bot):
         """
         When a user right clicks a message and selects 'Report Message', this function is called
         """
-        logger.info(
-            f"Report message triggered by {interaction.user} against {message.author} in {message.channel.name}"
-        )
+        logger.info(f"{interaction.user.name} reported {message.author} in {message.channel.name}")
 
         # Create a new Report object and add it to the reports dictionary
         report = Report(self, interaction, message)
