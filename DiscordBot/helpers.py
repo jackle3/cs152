@@ -41,11 +41,11 @@ PHISHING_SUBTYPES = {
 INVESTMENT_SCAM_SUBTYPES = {
     "crypto": AbuseType(
         label="Crypto",
-        description="Cryptocurrency investment scam",
+        description="Fraudulent cryptocurrency investment schemes",
     ),
-    "counterfeit": AbuseType(
-        label="Counterfeit",
-        description="Selling counterfeit items",
+    "romance": AbuseType(
+        label="Romance Scam",
+        description="Building fake relationship to solicit investments",
     ),
     "other": AbuseType(
         label="Other",

@@ -45,7 +45,7 @@ class ModBot(commands.Bot):
         logger.info("Context menu commands synced with Discord")
 
     async def on_ready(self):
-        logger.info(f"{self.user.name} has connected to Discord! It is these guilds:")
+        logger.info(f"{self.user.name} has connected to Discord! It is in these guilds:")
         for guild in self.guilds:
             logger.info(f" - {guild.name}")
         logger.info("Press Ctrl-C to quit.")

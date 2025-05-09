@@ -1,6 +1,6 @@
 import discord
-from discord.ui import View, Button, Select, Modal, TextInput
-from discord import SelectOption, ButtonStyle
+from discord.ui import View, Button, Modal, TextInput
+from discord import ButtonStyle
 from datetime import timedelta
 from helpers import (
     MESSAGE_ACTIONS,
@@ -11,11 +11,103 @@ from helpers import (
 )
 
 
+class ModeratorView(View):
+    """View for moderators to handle reports"""
+
+    def __init__(self, report):
+        super().__init__(timeout=None)  # No timeout for moderator views
+        self.report = report
+        self._add_buttons()
+
+    def _add_buttons(self):
+        """Add buttons for moderator actions"""
+        # Add button to start moderation flow
+        action_button = Button(
+            label="Take Action",
+            style=ButtonStyle.primary,
+            custom_id="take_action",
+        )
+        action_button.callback = self._on_action_button
+        self.add_item(action_button)
+
+        # Add button to dismiss report
+        dismiss_button = Button(
+            label="Dismiss Report",
+            style=ButtonStyle.secondary,
+            custom_id="dismiss_report",
+        )
+        dismiss_button.callback = self._on_dismiss_button
+        self.add_item(dismiss_button)
+
+    async def _on_action_button(self, interaction: discord.Interaction):
+        """Handle action button click"""
+        if not self.report.active:
+            await interaction.response.send_message(
+                "Error: This report has already been handled by another moderator.",
+                ephemeral=True,
+            )
+            return
+
+        await interaction.response.defer()
+        await start_moderation_flow(self.report, interaction)
+
+    async def _on_dismiss_button(self, interaction: discord.Interaction):
+        """Handle dismiss button click"""
+        if not self.report.active:
+            await interaction.response.send_message(
+                "Error: This report has already been handled by another moderator.",
+                ephemeral=True,
+            )
+            return
+
+        modal = DismissalReasonModal(self.report)
+        await interaction.response.send_modal(modal)
+
+
+class DismissalReasonModal(Modal):
+    """Modal for entering dismissal reason"""
+
+    def __init__(self, report):
+        super().__init__(title="Dismiss Report")
+        self.report = report
+
+        self.reason = TextInput(
+            label="Reason for Dismissal",
+            placeholder="Enter the reason for dismissing this report...",
+            style=discord.TextStyle.paragraph,
+            required=True,
+        )
+        self.add_item(self.reason)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        """Handle modal submission"""
+        await interaction.response.defer()
+
+        # Create dismissal embed
+        embed = discord.Embed(
+            title="Report Dismissed",
+            description=f"**Reason:** {self.reason.value}",
+            color=discord.Color.greyple(),
+        )
+        embed.set_footer(text=f"Dismissed by {interaction.user}")
+
+        # Send dismissal message
+        await interaction.followup.send(embed=embed)
+
+        # Send a followup to the reporter
+        await self.report.report_thread.send(
+            f"Your report has been dismissed by our moderators. If you disagree with the dismissal, please submit another report and provide more information in the additional information field."
+        )
+
+        # Mark report as inactive
+        self.report.active = False
+
+
 class MessageActionView(View):
     """View for selecting what to do with the reported message"""
 
     def __init__(self, report, on_complete):
-        super().__init__(timeout=300)
+        super().__init__(timeout=None)  # No timeout for moderator views
         self.report = report
         self.on_complete = on_complete
         self._add_message_action_buttons()
@@ -44,7 +136,7 @@ class UserActionView(View):
     """View for selecting what to do with the reported user"""
 
     def __init__(self, report, on_complete):
-        super().__init__(timeout=300)
+        super().__init__(timeout=None)
         self.report = report
         self.on_complete = on_complete
         self._add_user_action_buttons()
@@ -73,7 +165,7 @@ class SeverityLevelView(View):
     """View for selecting the severity level of the violation"""
 
     def __init__(self, report, on_complete):
-        super().__init__(timeout=300)
+        super().__init__(timeout=None)
         self.report = report
         self.on_complete = on_complete
         self._add_severity_buttons()
@@ -154,13 +246,22 @@ async def send_moderation_summary(report, interaction):
     )
     await interaction.followup.send(embed=embed)
 
+    # Send summary to the reporter in the report thread
+    if report.report_thread:
+        reporter_embed = discord.Embed(
+            title="Report Outcome",
+            description=f"Your report has been reviewed by our moderators.\n{summary}",
+            color=discord.Color.blue(),
+        )
+        await report.report_thread.send(embed=reporter_embed)
+
     # Take the message action
     if report.message_action == "remove":
         try:
             await report.reported_message.delete()
-        except discord.Forbidden:
+        except:
             await interaction.followup.send(
-                "❌ Failed to delete the reported message. The bot may lack permissions.",
+                "Error: Failed to delete the reported message. The bot may lack permissions.",
                 ephemeral=True,
             )
 
@@ -187,7 +288,7 @@ async def warn_user(user, report):
             description="You have received a warning for violating our community guidelines.",
             color=discord.Color.yellow(),
         )
-        add_report_details_to_embed(embed, report, hide_reporter=True)
+        add_report_details_to_embed(embed, report, hide_reporter=True, hide_additional_info=True)
         await user.send(embed=embed)
     except discord.Forbidden:
         pass  # User has DMs disabled
@@ -202,7 +303,7 @@ async def timeout_user(user, report):
             description="You have been timed out for 24 hours for violating our community guidelines.",
             color=discord.Color.orange(),
         )
-        add_report_details_to_embed(embed, report, hide_reporter=True)
+        add_report_details_to_embed(embed, report, hide_reporter=True, hide_additional_info=True)
         await user.send(embed=embed)
     except discord.Forbidden:
         pass  # User has DMs disabled
@@ -217,7 +318,7 @@ async def kick_user(user, report):
             description="You have been kicked from the server for violating our community guidelines.",
             color=discord.Color.red(),
         )
-        add_report_details_to_embed(embed, report, hide_reporter=True)
+        add_report_details_to_embed(embed, report, hide_reporter=True, hide_additional_info=True)
         await user.send(embed=embed)
     except discord.Forbidden:
         pass  # Bot doesn't have kick permissions
@@ -232,7 +333,7 @@ async def ban_user(user, report):
             description="You have been banned from the server for violating our community guidelines.",
             color=discord.Color.red(),
         )
-        add_report_details_to_embed(embed, report, hide_reporter=True)
+        add_report_details_to_embed(embed, report, hide_reporter=True, hide_additional_info=True)
         await user.send(embed=embed)
     except discord.Forbidden:
         pass  # Bot doesn't have ban permissions or user has DMs disabled

@@ -5,8 +5,8 @@ from helpers import ABUSE_TYPES
 
 
 class MainReportView(View):
-    def __init__(self, report, timeout=300):
-        super().__init__(timeout=timeout)
+    def __init__(self, report):
+        super().__init__(timeout=None)
         self.report = report
         self._add_abuse_buttons()
 
@@ -14,14 +14,11 @@ class MainReportView(View):
         """Add buttons for each abuse type in the ABUSE_TYPES dictionary"""
         # Add a button for each abuse type, using a consistent blue style for all
         for i, (key, abuse_type) in enumerate(ABUSE_TYPES.items()):
-            # Four buttons per row (we have 8 buttons total right now)
-            row = i // 4
-
             button_color = ButtonStyle.primary if key != "other" else ButtonStyle.secondary
             button = Button(
                 label=abuse_type.label,
                 style=button_color,
-                row=row,
+                row=(i // 4),  # four buttons per row
                 custom_id=f"abuse_type_{key}",
             )
 
@@ -128,8 +125,8 @@ class MainReportView(View):
 class AdditionalInfoView(View):
     """View for handling additional information input"""
 
-    def __init__(self, report, timeout=300):
-        super().__init__(timeout=timeout)
+    def __init__(self, report):
+        super().__init__(timeout=None)
         self.report = report
 
         # Add buttons
@@ -183,8 +180,8 @@ class SelectView(View):
     A generic selection view that can be used for any type of selection.
     """
 
-    def __init__(self, report, placeholder, options, on_select, parent_type=None, timeout=300):
-        super().__init__(timeout=timeout)
+    def __init__(self, report, placeholder, options, on_select, parent_type=None):
+        super().__init__(timeout=None)
         self.report = report
         self.on_select = on_select
         self.parent_type = parent_type

@@ -1,7 +1,7 @@
 import discord
 import shortuuid
 from helpers import ABUSE_TYPES, REPORT_CONFIRMATION_MESSAGE, quote_message, add_report_details_to_embed
-from moderator_views import ModeratorView
+from moderation_flow import ModeratorView
 from report_views import MainReportView
 
 
@@ -54,7 +54,9 @@ class Report:
 
         # Notify the user that the report thread was created
         await self.interaction.response.send_message(
-            f"Report thread created: {thread.mention}", ephemeral=True
+            f"Report thread created: {thread.mention}. This message will expire in 3 minutes.",
+            ephemeral=True,
+            delete_after=180,  # 3 minutes
         )
 
     def create_main_embed(self):
@@ -86,7 +88,11 @@ class Report:
         guild_id = self.reported_message.guild.id
         mod_channel = self.client.mod_channels.get(guild_id)
         if not mod_channel:
-            assert False, "Mod channel not found for this server"
+            # Handle the case where mod channel is not found more gracefully
+            await self.report_thread.send(
+                "Error: Moderator channel not configured for this server. Please contact an administrator."
+            )
+            return
 
         # Create a public thread in the mod channel for this report
         if self.abuse_category in ABUSE_TYPES:
