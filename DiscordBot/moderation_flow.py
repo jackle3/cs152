@@ -222,6 +222,14 @@ async def start_moderation_flow(report, interaction):
         # Generate and send summary
         await send_moderation_summary(report, interaction)
 
+        # For high or critical severity reports, notify the specialized investigation team
+        if level in ["high", "critical"]:
+            investigation_team_member = (
+                "<@469007804523479050>"  # Temporarily tag William as the investigation team
+            )
+            investigation_message = f"{investigation_team_member} A {SEVERITY_LEVELS[level]['label']} report requires your attention. Report ID: {report.id}"
+            await interaction.followup.send(investigation_message)
+
     # Start the flow with message action
     embed = discord.Embed(
         title="Message Action",

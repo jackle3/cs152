@@ -206,11 +206,16 @@ REPORT_CONFIRMATION_MESSAGE = """Thank you for helping keep our community safe. 
 To protect yourself from unwanted interactions, you can block the reported user.
 
 If you believe your account security may be compromised, we strongly recommend:
-- Changing your account password
-- Updating your account email
+- Changing your account password and email
 - Enabling two-factor authentication
 
-We will notify you via private message once we have reviewed your report."""
+We will notify you once we have reviewed your report. Potential outcomes of your report may include:
+- No action if no violation is found
+- Removal of the reported content
+- Warning issued to the user
+- Temporary or permanent ban from the server
+
+If you have any questions or concerns, please contact a moderator directly."""
 
 
 def add_report_details_to_embed(embed, report, hide_reporter=False, hide_additional_info=False):
