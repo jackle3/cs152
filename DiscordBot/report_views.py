@@ -33,9 +33,9 @@ class MainReportView(View):
 
         async def callback(interaction):
             await interaction.response.defer()
-            abuse_type = ABUSE_TYPES[abuse_type_key]
 
             # Set the report data
+            abuse_type = ABUSE_TYPES[abuse_type_key]
             self.report.abuse_category = abuse_type_key
             self.report.report_type = abuse_type.label
 
@@ -176,9 +176,7 @@ class AdditionalInfoModal(Modal):
 
 
 class SelectView(View):
-    """
-    A generic selection view that can be used for any type of selection.
-    """
+    """A generic selection view that can be used for any type of selection"""
 
     def __init__(self, report, placeholder, options, on_select, parent_type=None):
         super().__init__(timeout=None)

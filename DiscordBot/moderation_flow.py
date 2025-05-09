@@ -95,9 +95,14 @@ class DismissalReasonModal(Modal):
         await interaction.followup.send(embed=embed)
 
         # Send a followup to the reporter
-        await self.report.report_thread.send(
-            f"Your report has been dismissed by our moderators. If you disagree with the dismissal, please submit another report and provide more information in the additional information field."
+        reporter_embed = discord.Embed(
+            title="Report Dismissed",
+            description="Your report has been dismissed by our moderators. If you disagree with the dismissal, please submit another report and provide more information in the additional information field.",
+            color=discord.Color.greyple(),
         )
+        reporter_embed.set_footer(text=f"Report ID: {self.report.id}")
+        reporter_embed.timestamp = discord.utils.utcnow()
+        await self.report.report_thread.send(embed=reporter_embed)
 
         # Mark report as inactive
         self.report.active = False
@@ -107,7 +112,7 @@ class MessageActionView(View):
     """View for selecting what to do with the reported message"""
 
     def __init__(self, report, on_complete):
-        super().__init__(timeout=None)  # No timeout for moderator views
+        super().__init__(timeout=None)
         self.report = report
         self.on_complete = on_complete
         self._add_message_action_buttons()
@@ -228,7 +233,7 @@ async def start_moderation_flow(report, interaction):
 
 
 async def send_moderation_summary(report, interaction):
-    """Send a summary of the moderation actions taken"""
+    """Send a summary of the moderation actions taken and take the appropriate actions"""
     # Format the summary
     summary = MODERATION_SUMMARY_TEMPLATE.format(
         message_action=MESSAGE_ACTIONS[report.message_action],
