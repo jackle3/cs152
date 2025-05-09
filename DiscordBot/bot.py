@@ -7,8 +7,6 @@ import json
 import logging
 import re
 from report import Report
-from collections import defaultdict
-from utils import ABUSE_TYPES
 
 # Set up logging to the console
 logger = logging.getLogger("discord")

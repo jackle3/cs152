@@ -2,6 +2,15 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any
 
 
+def quote_message(message):
+    """Truncate a message and place it inside a block quote"""
+    message_content = message.content if message.content else "[No text content]"
+    if len(message_content) > 1024:
+        message_content = message_content[:1021] + "..."
+    message_content = f">>> {message_content}"
+    return message_content
+
+
 @dataclass
 class AbuseType:
     label: str
@@ -189,15 +198,6 @@ ABUSE_TYPES = {
         description="Other reportable content",
     ),
 }
-
-
-def quote_message(message):
-    """Truncate a message and place it inside a block quote"""
-    message_content = message.content if message.content else "[No text content]"
-    if len(message_content) > 1024:
-        message_content = message_content[:1021] + "..."
-    message_content = f">>> {message_content}"
-    return message_content
 
 
 # Standard confirmation message for all reports
