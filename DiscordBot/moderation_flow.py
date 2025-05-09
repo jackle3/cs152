@@ -302,7 +302,7 @@ async def warn_user(user, report):
 async def timeout_user(user, report):
     """Timeout the user"""
     try:
-        await user.timeout(timedelta(hours=24), reason="Reported for violation")
+        # await user.timeout(timedelta(hours=24), reason="Reported for violation")
         embed = discord.Embed(
             title="Timeout",
             description="You have been timed out for 24 hours for violating our community guidelines.",
@@ -317,7 +317,7 @@ async def timeout_user(user, report):
 async def kick_user(user, report):
     """Kick the user"""
     try:
-        await user.kick(reason="Reported for violation")
+        # await user.kick(reason="Reported for violation")
         embed = discord.Embed(
             title="Kick",
             description="You have been kicked from the server for violating our community guidelines.",
@@ -332,7 +332,7 @@ async def kick_user(user, report):
 async def ban_user(user, report):
     """Ban the user"""
     try:
-        await user.ban(reason="Reported for violation")
+        # await user.ban(reason="Reported for violation")
         embed = discord.Embed(
             title="Ban",
             description="You have been banned from the server for violating our community guidelines.",
