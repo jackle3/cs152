@@ -1,5 +1,4 @@
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any
+from dataclasses import dataclass
 import discord
 
 
@@ -16,7 +15,7 @@ def quote_message(message):
 class AbuseType:
     label: str
     description: str
-    subtypes: Optional[Dict[str, "AbuseType"]] = None
+    subtypes: dict = None
 
 
 # Fraud subtypes
@@ -207,9 +206,9 @@ REPORT_CONFIRMATION_MESSAGE = """Thank you for helping keep our community safe. 
 To protect yourself from unwanted interactions, you can block the reported user.
 
 If you believe your account security may be compromised, we strongly recommend:
-  - Changing your account password
-  - Updating your account email
-  - Enabling two-factor authentication
+- Changing your account password
+- Updating your account email
+- Enabling two-factor authentication
 
 We will notify you via private message once we have reviewed your report."""
 
@@ -260,3 +259,68 @@ def add_report_details_to_embed(embed, report, hide_reporter=False, hide_additio
     embed.timestamp = discord.utils.utcnow()
 
     return embed
+
+
+# Message actions
+MESSAGE_ACTIONS = {
+    "remove": "Remove Message",
+    "keep": "Keep Message",
+}
+
+# User actions with metadata
+USER_ACTIONS = {
+    "warn": {
+        "label": "Warn User",
+        "message": "The user has been warned about their behavior.",
+        "color": discord.Color.yellow(),
+    },
+    "timeout": {
+        "label": "Timeout User (24h)",
+        "message": "The user has been temporarily suspended from the server for 24 hours.",
+        "color": discord.Color.orange(),
+    },
+    "kick": {
+        "label": "Kick User",
+        "message": "The user has been removed from the server and will need to rejoin if they wish to return.",
+        "color": discord.Color.red(),
+    },
+    "ban": {
+        "label": "Ban User",
+        "message": "The user has been permanently banned from the server.",
+        "color": discord.Color.red(),
+    },
+}
+
+# Severity levels with metadata
+SEVERITY_LEVELS = {
+    "low": {
+        "label": "Low Severity",
+        "description": "Minor violation that doesn't significantly impact the community",
+        "color": discord.Color.green(),
+    },
+    "medium": {
+        "label": "Medium Severity",
+        "description": "Moderate violation that affects community members",
+        "color": discord.Color.yellow(),
+    },
+    "high": {
+        "label": "High Severity",
+        "description": "Serious violation that significantly impacts the community",
+        "color": discord.Color.orange(),
+    },
+    "critical": {
+        "label": "Critical Severity",
+        "description": "Extreme violation that requires immediate attention",
+        "color": discord.Color.red(),
+    },
+}
+
+# Moderation summary template
+MODERATION_SUMMARY_TEMPLATE = """
+**Message Action:** {message_action}
+**User Action:** {user_action}
+**Severity Level:** {severity_level}
+
+Report ID: {report_id}
+Moderator: {moderator}
+"""

@@ -1,7 +1,7 @@
 import discord
 import shortuuid
 from helpers import ABUSE_TYPES, REPORT_CONFIRMATION_MESSAGE, quote_message, add_report_details_to_embed
-from moderator_views import ModeratorActionView
+from moderator_views import ModeratorView
 from report_views import MainReportView
 
 
@@ -26,6 +26,11 @@ class Report:
 
         # Whether the report is still active and can be acted upon
         self.active = True
+
+        # Moderation flow data
+        self.message_action = None  # What to do with the message
+        self.user_action = None  # What to do with the user
+        self.severity_level = None  # Severity level of the violation
 
     async def show_report_view(self):
         """Show the message being reported and walk the user through the report flow"""
@@ -101,7 +106,7 @@ class Report:
         add_report_details_to_embed(embed, self)
 
         # Send to mod thread with appropriate action buttons
-        view = ModeratorActionView(self)
+        view = ModeratorView(self)
         await thread.send(embed=embed, view=view)
 
         # Send confirmation to the report thread
