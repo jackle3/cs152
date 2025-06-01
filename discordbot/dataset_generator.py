@@ -421,10 +421,10 @@ def main():
     train_examples = [examples[i] for i in range(len(examples)) if i not in test_indices]
 
     # Save train set
-    generator.save_dataset(train_examples, "discord_moderation_train_dataset.csv")
+    generator.save_dataset(train_examples, "data/discord_moderation_train_dataset.csv")
 
     # Save test set
-    generator.save_dataset(test_examples, "discord_moderation_test_dataset.csv")
+    generator.save_dataset(test_examples, "data/discord_moderation_test_dataset.csv")
 
     # Calculate and display generation cost
     generator.calculate_generation_cost()

@@ -112,7 +112,7 @@ def validate_abuse_type(example, prediction, trace=None):
 
 
 def get_trainset():
-    df = pd.read_csv("discord_moderation_train_dataset.csv")
+    df = pd.read_csv("data/discord_moderation_train_dataset.csv")
     trainset = []
     for _, row in df.iterrows():
         message = row["message"]
@@ -204,7 +204,7 @@ def evaluate_agent(optimized: bool = False):
     # Save confusion matrix data to CSV
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     confusion_df = pd.DataFrame(confusion_matrix_data)
-    confusion_csv_path = f"logs/confusion_data_{agent_type}_{timestamp}.csv"
+    confusion_csv_path = f"data/confusion_data_{agent_type}_{timestamp}.csv"
     confusion_df.to_csv(confusion_csv_path, index=False)
     print(f"✅ Saved confusion matrix data to {confusion_csv_path}")
 
