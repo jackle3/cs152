@@ -3,6 +3,7 @@ discord-bot/tokens.json
 TABot/tokens.json
 .DS_Store
 logs/
+tokens.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

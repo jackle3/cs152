@@ -67,8 +67,8 @@ class ModeratorView(View):
             thread_name = f"Other - {interaction.user.name}"
 
         # Create the thread from the original report message
-        if hasattr(self.report, "mod_report_message"):
-            thread = await self.report.mod_report_message.create_thread(
+        if hasattr(self.report, "mod_message"):
+            thread = await self.report.mod_message.create_thread(
                 name=thread_name,
                 auto_archive_duration=1440,  # 24 hours
             )
