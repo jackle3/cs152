@@ -54,7 +54,6 @@ class AgentReport(dspy.Signature):
     severity: Literal[*severity_levels] = dspy.OutputField(
         description="The severity of the abuse type in the message"
     )
-    # reason: str = dspy.OutputField(description="Additional information and your reasoning for the report")
     confidence: float = dspy.OutputField(description="The confidence in the report")
 
 
@@ -82,7 +81,6 @@ def validate_abuse_type(example, prediction, trace=None):
             "actual_fraud_subtype": example.fraud_subtype,
             "predicted_fraud_subtype": prediction.fraud_subtype,
             "predicted_severity": prediction.severity,
-            "predicted_reason": prediction.reason,
             "predicted_confidence": prediction.confidence,
         }
     )
