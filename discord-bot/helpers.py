@@ -1,9 +1,12 @@
-from dataclasses import dataclass
+"""
+Utility functions for the Discord moderation bot.
+"""
+
 import discord
 
 
 def quote_message(message):
-    """Truncate a message and place it inside a block quote"""
+    """Truncate a message and place it inside a block quote."""
     message_content = message.content if message.content else "[No text content]"
     if len(message_content) > 1024:
         message_content = message_content[:1021] + "..."
@@ -11,215 +14,8 @@ def quote_message(message):
     return message_content
 
 
-@dataclass
-class AbuseType:
-    label: str
-    description: str
-    subtypes: dict = None
-
-
-# Fraud subtypes
-PHISHING_SUBTYPES = {
-    "identifying_info": AbuseType(
-        label="Identifying Information",
-        description="Seeking birthday, name, or other identifying information",
-    ),
-    "location": AbuseType(
-        label="Location",
-        description="Seeking location information",
-    ),
-    "payment_info": AbuseType(
-        label="Payment Information",
-        description="Seeking credit card or payment details",
-    ),
-    "ssn": AbuseType(
-        label="Social Security Number",
-        description="Seeking Social Security Number",
-    ),
-}
-
-INVESTMENT_SCAM_SUBTYPES = {
-    "crypto": AbuseType(
-        label="Crypto",
-        description="Fraudulent cryptocurrency investment schemes",
-    ),
-    "romance": AbuseType(
-        label="Romance Scam",
-        description="Building fake relationship to solicit investments",
-    ),
-    "other": AbuseType(
-        label="Other",
-        description="Other investment scam type",
-    ),
-}
-
-ECOMMERCE_SUBTYPES = {
-    "fake_store": AbuseType(
-        label="Fake Online Store",
-        description="Fraudulent online store",
-    ),
-    "counterfeit": AbuseType(
-        label="Counterfeit Items",
-        description="Selling counterfeit items",
-    ),
-}
-
-ACCOUNT_TAKEOVER_SUBTYPES = {
-    "unauthorized_login": AbuseType(
-        label="Unauthorized Login",
-        description="Someone logged into my account without permission",
-    ),
-    "unauthorized_message": AbuseType(
-        label="Unauthorized Message",
-        description="Someone posted/messaged from my account",
-    ),
-}
-
-# Harassment subtypes
-HARASSMENT_SUBTYPES = {
-    "bullying": AbuseType(
-        label="Bullying",
-        description="Persistent harmful behavior targeting an individual",
-    ),
-    "sexual_harassment": AbuseType(
-        label="Sexual Harassment",
-        description="Unwanted sexual comments or advances",
-    ),
-    "threats": AbuseType(
-        label="Threats",
-        description="Threats of harm or intimidation",
-    ),
-    "doxxing": AbuseType(
-        label="Doxxing",
-        description="Sharing private or personal information without consent",
-    ),
-}
-
-# Hate speech subtypes
-HATE_SPEECH_SUBTYPES = {
-    "racial": AbuseType(
-        label="Racial/Ethnic",
-        description="Hate based on race or ethnicity",
-    ),
-    "gender": AbuseType(
-        label="Gender-Based",
-        description="Hate based on gender or gender identity",
-    ),
-    "religion": AbuseType(
-        label="Religious",
-        description="Hate based on religious beliefs",
-    ),
-    "orientation": AbuseType(
-        label="Sexual Orientation",
-        description="Hate based on sexual orientation",
-    ),
-    "disability": AbuseType(
-        label="Ability",
-        description="Hate based on disability",
-    ),
-}
-
-# Illegal content subtypes
-ILLEGAL_CONTENT_SUBTYPES = {
-    "piracy": AbuseType(
-        label="Piracy",
-        description="Unauthorized sharing of copyrighted material",
-    ),
-    "csam": AbuseType(
-        label="CSAM",
-        description="Child Sexual Abuse Material",
-    ),
-    "drugs": AbuseType(
-        label="Illegal Substances",
-        description="Content selling or promoting illegal substances",
-    ),
-    "weapons": AbuseType(
-        label="Weapons/Violence",
-        description="Content selling illegal weapons or promoting violence",
-    ),
-}
-
-# Fraud types
-FRAUD_SUBTYPES = {
-    "phishing": AbuseType(
-        label="Phishing",
-        description="Attempts to steal personal information",
-        subtypes=PHISHING_SUBTYPES,
-    ),
-    "investment_scam": AbuseType(
-        label="Investment Scam",
-        description="Fraudulent investment opportunities",
-        subtypes=INVESTMENT_SCAM_SUBTYPES,
-    ),
-    "ecommerce": AbuseType(
-        label="E-Commerce Scam",
-        description="Fake stores or counterfeit items",
-        subtypes=ECOMMERCE_SUBTYPES,
-    ),
-    "account_takeover": AbuseType(
-        label="Account Takeover",
-        description="Unauthorized account access",
-        subtypes=ACCOUNT_TAKEOVER_SUBTYPES,
-    ),
-}
-
-# All abuse types in a dictionary for easy lookup
-ABUSE_TYPES = {
-    "fraud": AbuseType(
-        label="Fraud",
-        description="Scams and deceptive content",
-        subtypes=FRAUD_SUBTYPES,
-    ),
-    "harassment": AbuseType(
-        label="Harassment",
-        description="Bullying or targeted abuse",
-        subtypes=HARASSMENT_SUBTYPES,
-    ),
-    "hate_speech": AbuseType(
-        label="Hate Speech",
-        description="Discriminatory or hateful content",
-        subtypes=HATE_SPEECH_SUBTYPES,
-    ),
-    "spam": AbuseType(
-        label="Spam",
-        description="Unwanted promotional or repetitive content",
-    ),
-    "misinformation": AbuseType(
-        label="Misinformation",
-        description="Intentionally false or misleading information",
-    ),
-    "illegal_content": AbuseType(
-        label="Illegal Content",
-        description="Content that violates laws or platform terms",
-        subtypes=ILLEGAL_CONTENT_SUBTYPES,
-    ),
-    "other": AbuseType(
-        label="Other",
-        description="Other reportable content",
-    ),
-}
-
-
-# Standard confirmation message for all reports
-REPORT_CONFIRMATION_MESSAGE = """Thank you for helping keep our community safe. Our moderation team will review your report and take appropriate action.
-
-To protect yourself from unwanted interactions, you can block the reported user.
-
-If you believe your account security may be compromised, we strongly recommend:
-- Changing your account password and email
-- Enabling two-factor authentication
-
-We will notify you once we have reviewed your report. Potential outcomes of your report may include:
-- No action if no violation is found
-- Removal of the reported content
-- Warning issued to the user
-- Temporary or permanent ban from the server
-
-If you have any questions or concerns, please contact a moderator directly."""
-
-
 def add_report_details_to_embed(embed, report, hide_reporter=False, hide_additional_info=False):
-    """Add report details to an embed
+    """Add report details to an embed.
 
     Args:
         embed: The discord.Embed to add details to
@@ -227,6 +23,8 @@ def add_report_details_to_embed(embed, report, hide_reporter=False, hide_additio
         hide_reporter: If True, don't show who reported the message
         hide_additional_info: If True, don't show additional information
     """
+    from abuse_types import ABUSE_TYPES
+
     message = report.reported_message
     reporter = report.interaction.user
 
@@ -236,15 +34,20 @@ def add_report_details_to_embed(embed, report, hide_reporter=False, hide_additio
     # Add report details based on abuse type
     if report.abuse_category and report.abuse_category in ABUSE_TYPES:
         abuse_type = ABUSE_TYPES[report.abuse_category]
-        embed.add_field(name="Report Type", value=abuse_type.label)
 
-        # Add all subtypes in the chain
-        current_type = abuse_type
-        for subtype_key in report.subtypes:
-            if current_type.subtypes and subtype_key in current_type.subtypes:
-                subtype = current_type.subtypes[subtype_key]
-                embed.add_field(name="Subtype", value=subtype.label)
-                current_type = subtype
+        # Add emoji to make it more visually appealing
+        report_type_text = f"{abuse_type.emoji} {abuse_type.label}"
+        embed.add_field(name="Report Type", value=report_type_text)
+
+        # Add subtypes if they exist
+        if abuse_type.subtypes and report.subtypes:
+            current_type = abuse_type
+            for subtype_key in report.subtypes:
+                if current_type.subtypes and subtype_key in current_type.subtypes:
+                    subtype = current_type.subtypes[subtype_key]
+                    subtype_text = f"{subtype.emoji} {subtype.label}"
+                    embed.add_field(name="Specific Type", value=subtype_text)
+                    current_type = subtype
     else:
         # Fallback
         embed.add_field(name="Report Type", value=report.report_type or "Other")
@@ -266,66 +69,17 @@ def add_report_details_to_embed(embed, report, hide_reporter=False, hide_additio
     return embed
 
 
-# Message actions
-MESSAGE_ACTIONS = {
-    "remove": "Remove Message",
-    "keep": "Keep Message",
-}
+def create_progress_embed(title, description, color=discord.Color.blue()):
+    """Create a standardized embed for showing progress through the report flow.
 
-# User actions with metadata
-USER_ACTIONS = {
-    "warn": {
-        "label": "Warn User",
-        "message": "The user has been warned about their behavior.",
-        "color": discord.Color.yellow(),
-    },
-    "timeout": {
-        "label": "Timeout User (24h)",
-        "message": "The user has been temporarily suspended from the server for 24 hours.",
-        "color": discord.Color.orange(),
-    },
-    "kick": {
-        "label": "Kick User",
-        "message": "The user has been removed from the server and will need to rejoin if they wish to return.",
-        "color": discord.Color.red(),
-    },
-    "ban": {
-        "label": "Ban User",
-        "message": "The user has been permanently banned from the server.",
-        "color": discord.Color.red(),
-    },
-}
+    Args:
+        title: Embed title
+        description: Embed description
+        color: Embed color
 
-# Severity levels with metadata
-SEVERITY_LEVELS = {
-    "low": {
-        "label": "Low Severity",
-        "description": "Minor violation that doesn't significantly impact the community",
-        "color": discord.Color.green(),
-    },
-    "medium": {
-        "label": "Medium Severity",
-        "description": "Moderate violation that affects community members",
-        "color": discord.Color.yellow(),
-    },
-    "high": {
-        "label": "High Severity",
-        "description": "Serious violation that significantly impacts the community",
-        "color": discord.Color.orange(),
-    },
-    "critical": {
-        "label": "Critical Severity",
-        "description": "Extreme violation that requires immediate attention",
-        "color": discord.Color.red(),
-    },
-}
+    Returns:
+        discord.Embed with progress information
+    """
+    embed = discord.Embed(title=title, description=description, color=color)
 
-# Moderation summary template
-MODERATION_SUMMARY_TEMPLATE = """
-**Message Action:** {message_action}
-**User Action:** {user_action}
-**Severity Level:** {severity_level}
-
-Report ID: {report_id}
-Moderator: {moderator}
-"""
+    return embed
