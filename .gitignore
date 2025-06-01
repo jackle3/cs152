@@ -2,7 +2,7 @@
 discord-bot/tokens.json
 TABot/tokens.json
 .DS_Store
-logs/
+discord.log
 tokens.json
 
 # Byte-compiled / optimized / DLL files

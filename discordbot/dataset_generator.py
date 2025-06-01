@@ -6,6 +6,7 @@ import json
 import csv
 import random
 from dataclasses import dataclass
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Set up the language model - using GPT-4 for better dataset generation
 token_path = "tokens.json"
@@ -14,9 +15,15 @@ if not os.path.isfile(token_path):
 with open(token_path) as f:
     tokens = json.load(f)
     openai_token = tokens["openai"]
+    qwen_token = tokens["qwen"]
 
 # Temperature controls randomness: 0.0 = deterministic, 1.0 = maximum creativity/diversity
-lm = dspy.LM("openai/gpt-4o-mini", api_key=openai_token, temperature=0.8)
+
+model = "openai/qwen2.5-72b-instruct"
+api_base = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+api_key = qwen_token
+
+lm = dspy.LM(model=model, api_base=api_base, api_key=qwen_token, temperature=0.8)
 dspy.configure(lm=lm)
 
 # Extract available types
@@ -33,6 +40,15 @@ class DatasetExample:
     fraud_subtype: Optional[str]
 
 
+def write_to_file(dataset_example: DatasetExample):
+    message = dataset_example.message
+    abuse_type = dataset_example.abuse_type
+    fraud_subtype = dataset_example.fraud_subtype
+
+    with open(f"logs/datagen_{abuse_type}.txt", "a") as f:
+        f.write(f"{f'{fraud_subtype}: ' if fraud_subtype else ''}{message}\n")
+
+
 class MessageGenerator(dspy.Signature):
     """
     Generate realistic Discord messages for testing moderation systems.
@@ -40,10 +56,10 @@ class MessageGenerator(dspy.Signature):
 
     # Inputs
     category: str = dspy.InputField(
-        description="Category of message to generate (benign, fraud, spam, harassment, inappropriate, other)"
+        description="Category of message to generate (benign, fraud, spam, harassment, inappropriate)"
     )
     subtype: Optional[str] = dspy.InputField(
-        description="Specific subtype if category is fraud", default=None
+        description="Specific fraud subtype, if the category is fraud", default=None
     )
     context: str = dspy.InputField(
         description="Discord server context (gaming, programming, general, etc.)", default="general"
@@ -204,7 +220,6 @@ class DatasetGenerator(dspy.Module):
             "spam": 50,
             "harassment": 40,
             "inappropriate": 40,
-            "other": 30,
         }
 
     def generate_benign_messages(self, count: int) -> List[DatasetExample]:
@@ -217,9 +232,13 @@ class DatasetGenerator(dspy.Module):
             scenario = random.choice(self.scenarios[context])
 
             # Generate message with varied prompts for diversity
-            result = self.generator(category="benign", context=context, style=style, scenario=scenario)
+            result = self.generator(
+                category="benign", subtype=None, context=context, style=style, scenario=scenario
+            )
 
-            examples.append(DatasetExample(message=result.message, abuse_type=None, fraud_subtype=None))
+            example = DatasetExample(message=result.message, abuse_type=None, fraud_subtype=None)
+            examples.append(example)
+            write_to_file(example)
 
             print(f"Generated benign message {i+1}/{count}")
 
@@ -240,9 +259,9 @@ class DatasetGenerator(dspy.Module):
                     category="fraud", subtype=subtype, context=context, style=style, scenario=scenario
                 )
 
-                examples.append(
-                    DatasetExample(message=result.message, abuse_type="fraud", fraud_subtype=subtype)
-                )
+                example = DatasetExample(message=result.message, abuse_type="fraud", fraud_subtype=subtype)
+                examples.append(example)
+                write_to_file(example)
 
                 print(f"Generated {subtype} message {i+1}/{count}")
 
@@ -258,37 +277,54 @@ class DatasetGenerator(dspy.Module):
             scenario = random.choice(self.scenarios[context])
 
             # Generate message with varied prompts for diversity
-            result = self.generator(category=category, context=context, style=style, scenario=scenario)
+            result = self.generator(
+                category=category, subtype=None, context=context, style=style, scenario=scenario
+            )
 
-            examples.append(DatasetExample(message=result.message, abuse_type=category, fraud_subtype=None))
+            example = DatasetExample(message=result.message, abuse_type=category, fraud_subtype=None)
+            examples.append(example)
+            write_to_file(example)
 
             print(f"Generated {category} message {i+1}/{count}")
 
         return examples
 
     def generate_full_dataset(self) -> List[DatasetExample]:
-        """Generate the complete dataset."""
+        """Generate the complete dataset with parallel execution."""
         all_examples = []
 
-        print("🤖 Starting dataset generation...")
+        print("🤖 Starting dataset generation with parallel execution...")
 
-        # Generate benign messages
-        print("\n📝 Generating benign messages...")
-        benign_examples = self.generate_benign_messages(self.generation_targets["benign"])
-        all_examples.extend(benign_examples)
+        # Prepare all generation tasks
+        tasks = []
 
-        # Generate fraud messages
-        print("\n🚨 Generating fraud messages...")
-        fraud_examples = self.generate_fraud_messages(self.generation_targets["fraud"])
-        all_examples.extend(fraud_examples)
+        with ThreadPoolExecutor(max_workers=6) as executor:
+            # Submit benign message generation
+            print("\n📝 Starting benign message generation...")
+            future_benign = executor.submit(self.generate_benign_messages, self.generation_targets["benign"])
+            tasks.append(("benign", future_benign))
 
-        # Generate other abuse types
-        for abuse_type in ["spam", "harassment", "inappropriate", "other"]:
-            print(f"\n⚠️ Generating {abuse_type} messages...")
-            other_examples = self.generate_other_abuse_messages(
-                abuse_type, self.generation_targets[abuse_type]
-            )
-            all_examples.extend(other_examples)
+            # Submit fraud message generation
+            print("\n🚨 Starting fraud message generation...")
+            future_fraud = executor.submit(self.generate_fraud_messages, self.generation_targets["fraud"])
+            tasks.append(("fraud", future_fraud))
+
+            # Submit other abuse type generations
+            for abuse_type in ["spam", "harassment", "inappropriate"]:
+                print(f"\n⚠️ Starting {abuse_type} message generation...")
+                future_abuse = executor.submit(
+                    self.generate_other_abuse_messages, abuse_type, self.generation_targets[abuse_type]
+                )
+                tasks.append((abuse_type, future_abuse))
+
+            # Collect results as they complete
+            for task_name, future in tasks:
+                try:
+                    examples = future.result()
+                    all_examples.extend(examples)
+                    print(f"✅ Completed {task_name} generation: {len(examples)} examples")
+                except Exception as e:
+                    print(f"❌ Error in {task_name} generation: {e}")
 
         # Shuffle the dataset
         random.shuffle(all_examples)
@@ -296,7 +332,7 @@ class DatasetGenerator(dspy.Module):
         print(f"\n✅ Dataset generation complete! Generated {len(all_examples)} examples.")
         return all_examples
 
-    def save_dataset(self, examples: List[DatasetExample], filename: str = "discord_moderation_dataset.csv"):
+    def save_dataset(self, examples: List[DatasetExample], filename: str):
         """Save the dataset to a CSV file."""
         with open(filename, "w", newline="", encoding="utf-8") as csvfile:
             fieldnames = ["message", "abuse_type", "fraud_subtype"]
@@ -352,16 +388,21 @@ def main():
     # Print statistics
     generator.print_dataset_stats(examples)
 
-    # Save to CSV
-    generator.save_dataset(examples)
+    # Split into train and test sets first
+    test_size = int(0.15 * len(examples))
+    test_indices = random.sample(range(len(examples)), test_size)
+    test_examples = [examples[i] for i in test_indices]
+    train_examples = [examples[i] for i in range(len(examples)) if i not in test_indices]
 
-    # Also save a smaller test set
-    test_examples = random.sample(examples, min(50, len(examples)))
+    # Save train set
+    generator.save_dataset(train_examples, "discord_moderation_train_dataset.csv")
+
+    # Save test set
     generator.save_dataset(test_examples, "discord_moderation_test_dataset.csv")
 
     print("\n🎉 Dataset generation completed successfully!")
     print("Files created:")
-    print("  - discord_moderation_dataset.csv (full dataset)")
+    print("  - discord_moderation_train_dataset.csv (train dataset)")
     print("  - discord_moderation_test_dataset.csv (50 example test set)")
 
 
