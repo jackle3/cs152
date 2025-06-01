@@ -5,6 +5,7 @@ import os
 import json
 import asyncio
 
+
 class CleanupBot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.default()
@@ -12,7 +13,7 @@ class CleanupBot(commands.Bot):
         intents.reactions = True
         intents.members = True
         super().__init__(command_prefix="!", intents=intents)
-        
+
         self.group_num = None
 
     async def setup_hook(self):
@@ -28,7 +29,7 @@ class CleanupBot(commands.Bot):
         for guild in self.guilds:
             # Find all channels that start with 'group-'
             for channel in guild.text_channels:
-                if channel.name.startswith('group-18'):
+                if channel.name.startswith("group-18"):
                     try:
                         # Get all messages in the channel
                         async for message in channel.history(limit=None):
@@ -41,6 +42,7 @@ class CleanupBot(commands.Bot):
                     except Exception as e:
                         print(f"Error cleaning up {channel.name}: {str(e)}")
 
+
 async def main():
     # Load token from tokens.json
     token_path = "tokens.json"
@@ -52,7 +54,7 @@ async def main():
 
     # Create and run the bot
     bot = CleanupBot()
-    
+
     @bot.event
     async def on_ready():
         print(f"{bot.user.name} has connected to Discord!")
@@ -62,6 +64,7 @@ async def main():
         await bot.close()
 
     await bot.start(discord_token)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
