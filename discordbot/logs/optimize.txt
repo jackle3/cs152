@@ -1,6 +1,6 @@
 ❯ python agent.py
 Optimizing program with MIPROv2...
-2025/06/01 00:29:35 INFO dspy.teleprompt.mipro_optimizer_v2: 
+2025/06/01 04:37:32 INFO dspy.teleprompt.mipro_optimizer_v2: 
 RUNNING WITH THE FOLLOWING MEDIUM AUTO RUN SETTINGS:
 num_trials: 18
 minibatch: True
@@ -35,349 +35,310 @@ If you would like to bypass this confirmation step in future executions, set the
 Awaiting your input...
 
 Do you wish to continue? (y/n): y
-2025/06/01 00:29:37 INFO dspy.teleprompt.mipro_optimizer_v2: 
+2025/06/01 04:37:35 INFO dspy.teleprompt.mipro_optimizer_v2: 
 ==> STEP 1: BOOTSTRAP FEWSHOT EXAMPLES <==
-2025/06/01 00:29:37 INFO dspy.teleprompt.mipro_optimizer_v2: These will be used as few-shot example candidates for our program and for creating instructions.
+2025/06/01 04:37:35 INFO dspy.teleprompt.mipro_optimizer_v2: These will be used as few-shot example candidates for our program and for creating instructions.
 
-2025/06/01 00:29:37 INFO dspy.teleprompt.mipro_optimizer_v2: Bootstrapping N=12 sets of demonstrations...
+2025/06/01 04:37:35 INFO dspy.teleprompt.mipro_optimizer_v2: Bootstrapping N=12 sets of demonstrations...
 Bootstrapping set 1/12
 Bootstrapping set 2/12
 Bootstrapping set 3/12
-  6%|██████████████                                                                                                                                                                                                                               | 5/84 [00:11<03:04,  2.33s/it]
-Bootstrapped 4 full traces after 5 examples for up to 1 rounds, amounting to 5 attempts.
+  1%|█▏                                                                                                                                                     | 7/913 [00:17<37:22,  2.47s/it]
+Bootstrapped 4 full traces after 7 examples for up to 1 rounds, amounting to 7 attempts.
 Bootstrapping set 4/12
-  2%|█████▋                                                                                                                                                                                                                                       | 2/84 [00:04<02:54,  2.13s/it]
+  0%|▎                                                                                                                                                      | 2/913 [00:04<36:59,  2.44s/it]
 Bootstrapped 2 full traces after 2 examples for up to 1 rounds, amounting to 2 attempts.
 Bootstrapping set 5/12
-  4%|████████▍                                                                                                                                                                                                                                    | 3/84 [00:05<02:36,  1.93s/it]
-Bootstrapped 3 full traces after 3 examples for up to 1 rounds, amounting to 3 attempts.
+  1%|▊                                                                                                                                                      | 5/913 [00:12<37:47,  2.50s/it]
+Bootstrapped 3 full traces after 5 examples for up to 1 rounds, amounting to 5 attempts.
 Bootstrapping set 6/12
-  6%|██████████████                                                                                                                                                                                                                               | 5/84 [00:10<02:49,  2.15s/it]
-Bootstrapped 4 full traces after 5 examples for up to 1 rounds, amounting to 5 attempts.
+  0%|▏                                                                                                                                                      | 1/913 [00:03<51:42,  3.40s/it]
+Bootstrapped 1 full traces after 1 examples for up to 1 rounds, amounting to 1 attempts.
 Bootstrapping set 7/12
-  7%|████████████████▉                                                                                                                                                                                                                            | 6/84 [00:16<03:32,  2.73s/it]
+  1%|▉                                                                                                                                                      | 6/913 [00:16<41:39,  2.76s/it]
 Bootstrapped 3 full traces after 6 examples for up to 1 rounds, amounting to 6 attempts.
 Bootstrapping set 8/12
-  6%|██████████████                                                                                                                                                                                                                               | 5/84 [00:15<04:06,  3.12s/it]
-Bootstrapped 4 full traces after 5 examples for up to 1 rounds, amounting to 5 attempts.
+  0%|▏                                                                                                                                                      | 1/913 [00:02<37:51,  2.49s/it]
+Bootstrapped 1 full traces after 1 examples for up to 1 rounds, amounting to 1 attempts.
 Bootstrapping set 9/12
-  5%|███████████▎                                                                                                                                                                                                                                 | 4/84 [00:09<03:07,  2.34s/it]
-Bootstrapped 2 full traces after 4 examples for up to 1 rounds, amounting to 4 attempts.
+  1%|█▎                                                                                                                                                     | 8/913 [00:21<39:49,  2.64s/it]
+Bootstrapped 4 full traces after 8 examples for up to 1 rounds, amounting to 8 attempts.
 Bootstrapping set 10/12
-  2%|█████▋                                                                                                                                                                                                                                       | 2/84 [00:04<02:49,  2.07s/it]
+  0%|▎                                                                                                                                                      | 2/913 [00:04<36:55,  2.43s/it]
 Bootstrapped 2 full traces after 2 examples for up to 1 rounds, amounting to 2 attempts.
 Bootstrapping set 11/12
-  1%|██▊                                                                                                                                                                                                                                          | 1/84 [00:02<02:52,  2.07s/it]2025/06/01 00:31:00 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-  5%|███████████▎                                                                                                                                                                                                                                 | 4/84 [00:15<05:17,  3.96s/it]
+  0%|▋                                                                                                                                                      | 4/913 [00:11<42:25,  2.80s/it]
 Bootstrapped 4 full traces after 4 examples for up to 1 rounds, amounting to 4 attempts.
 Bootstrapping set 12/12
-  7%|████████████████▉                                                                                                                                                                                                                            | 6/84 [00:18<04:00,  3.09s/it]
-Bootstrapped 3 full traces after 6 examples for up to 1 rounds, amounting to 6 attempts.
-2025/06/01 00:31:30 INFO dspy.teleprompt.mipro_optimizer_v2: 
+  0%|▍                                                                                                                                                      | 3/913 [00:07<40:13,  2.65s/it]
+Bootstrapped 3 full traces after 3 examples for up to 1 rounds, amounting to 3 attempts.
+2025/06/01 04:39:17 INFO dspy.teleprompt.mipro_optimizer_v2: 
 ==> STEP 2: PROPOSE INSTRUCTION CANDIDATES <==
-2025/06/01 00:31:30 INFO dspy.teleprompt.mipro_optimizer_v2: We will use the few-shot examples from the previous step, a generated dataset summary, a summary of the program code, and a randomly selected prompting tip to propose instructions.
-2025/06/01 00:31:30 INFO dspy.teleprompt.mipro_optimizer_v2: 
+2025/06/01 04:39:17 INFO dspy.teleprompt.mipro_optimizer_v2: We will use the few-shot examples from the previous step, a generated dataset summary, a summary of the program code, and a randomly selected prompting tip to propose instructions.
+2025/06/01 04:39:58 INFO dspy.teleprompt.mipro_optimizer_v2: 
 Proposing N=6 instructions...
 
-2025/06/01 00:32:19 INFO dspy.teleprompt.mipro_optimizer_v2: Proposed Instructions for Predictor 0:
+2025/06/01 04:40:48 INFO dspy.teleprompt.mipro_optimizer_v2: Proposed Instructions for Predictor 0:
 
-2025/06/01 00:32:19 INFO dspy.teleprompt.mipro_optimizer_v2: 0: Automatically report Discord messages that fall into our abuse types.
+2025/06/01 04:40:48 INFO dspy.teleprompt.mipro_optimizer_v2: 0: Automatically report Discord messages that fall into our abuse types.
 
-2025/06/01 00:32:19 INFO dspy.teleprompt.mipro_optimizer_v2: 1: Evaluate the provided Discord message for potential abuse. Determine if it falls into any of the specified abuse types, including inappropriate content, spam, fraud, or harassment. Generate a structured report that includes your reasoning, the identified abuse type, any relevant fraud subtype, the severity of the abuse, additional reasoning for the report, and a confidence score.
+2025/06/01 04:40:48 INFO dspy.teleprompt.mipro_optimizer_v2: 1: In a high-stakes Discord server where maintaining a respectful and safe environment is crucial, automatically report messages that potentially fall into categories of abuse such as fraud, harassment, inappropriate content, or spam. Analyze the content of each message to classify the abuse type, its severity, and provide reasoning for your classification. Ensure your outputs include the reasoning behind your decision, the specific abuse type identified, any relevant fraud subtype, the severity level, additional reasoning for the report, and a confidence score reflecting the accuracy of your classification.
 
-2025/06/01 00:32:19 INFO dspy.teleprompt.mipro_optimizer_v2: 2: Analyze the content of a Discord message to determine if it falls into any of the designated abuse categories, including inappropriate content, spam, fraud, or harassment. Provide a detailed report that includes: the reasoning behind your classification, the identified type of abuse (if applicable), the specific subtype of fraud (if relevant), the severity of the abuse, additional reasoning for the report, and a confidence score reflecting the accuracy of your assessment. Ensure that your analysis is thorough and considers the context of the message to facilitate effective moderation and enhance community safety.
+2025/06/01 04:40:48 INFO dspy.teleprompt.mipro_optimizer_v2: 2: Analyze the following Discord message and determine if it falls into any categories of abuse such as fraud, harassment, inappropriate content, or spam. Provide a structured output that includes the reasoning behind your classification, the identified abuse type, the specific fraud subtype if applicable, the severity of the abuse, additional reasoning for the report, and a confidence score indicating how certain you are about your classification.
 
-2025/06/01 00:32:19 INFO dspy.teleprompt.mipro_optimizer_v2: 3: Analyze the provided Discord message and determine if it falls under any specific categories of abuse, such as inappropriate content, spam, fraud, or harassment. For each message, provide a structured output that includes the following: the type of abuse identified (if any), a specific subtype of fraud (if applicable), the severity level of the abuse, a detailed reasoning for your classification, and a confidence score reflecting your certainty about the classification. Ensure that your evaluation is thorough and considers all aspects of the message content.
+2025/06/01 04:40:48 INFO dspy.teleprompt.mipro_optimizer_v2: 3: Analyze the content of the provided Discord message and classify it into one of the predefined abuse types, such as fraud, harassment, inappropriate content, or spam. Provide a detailed reasoning behind your classification, specify the severity of the abuse, and include your confidence level in the assessment. Ensure that your response includes all relevant outputs: reasoning, abuse type, fraud subtype (if applicable), severity, additional reasoning, and confidence.
 
-2025/06/01 00:32:19 INFO dspy.teleprompt.mipro_optimizer_v2: 4: Analyze the provided Discord message and determine if it falls into any of the abuse categories such as inappropriate content, spam, fraud, or harassment. Output the reasoning for your analysis, identify the abuse type (if any), specify the fraud subtype (if applicable), assess the severity of the abuse, provide additional reasoning for your report, and indicate your confidence level in the assessment.
+2025/06/01 04:40:48 INFO dspy.teleprompt.mipro_optimizer_v2: 4: Analyze the following Discord message and classify it based on the types of abuse: fraud, harassment, inappropriate content, or spam. Provide a detailed reasoning for your classification, specify the abuse type (if applicable), identify any relevant fraud subtype (if the abuse type is fraud), assess the severity of the abuse (low, medium, high, or critical), explain your reasoning, and give a confidence score reflecting your certainty in the classification.
 
-2025/06/01 00:32:19 INFO dspy.teleprompt.mipro_optimizer_v2: 5: Analyze the following Discord message and classify it according to the defined abuse types. Provide a detailed reasoning for your classification, identify the specific abuse type (e.g., inappropriate, spam, fraud), any relevant fraud subtype (if applicable), assess the severity of the abuse, and include your reasoning for the report along with your confidence level in the classification.
+2025/06/01 04:40:48 INFO dspy.teleprompt.mipro_optimizer_v2: 5: Analyze and classify the following Discord message for potential abuse. Provide a structured output that includes reasoning for your classification, the identified abuse type (e.g., fraud, harassment, spam), any relevant fraud subtype (if applicable), the severity of the abuse (low, medium, high, critical), additional reasoning for the classification, and a confidence score indicating the reliability of your report.
 
-2025/06/01 00:32:19 INFO dspy.teleprompt.mipro_optimizer_v2: 
+2025/06/01 04:40:48 INFO dspy.teleprompt.mipro_optimizer_v2: 
 
-2025/06/01 00:32:19 INFO dspy.teleprompt.mipro_optimizer_v2: ==> STEP 3: FINDING OPTIMAL PROMPT PARAMETERS <==
-2025/06/01 00:32:19 INFO dspy.teleprompt.mipro_optimizer_v2: We will evaluate the program over a series of trials with different combinations of instructions and few-shot examples to find the optimal combination using Bayesian Optimization.
+2025/06/01 04:40:48 INFO dspy.teleprompt.mipro_optimizer_v2: ==> STEP 3: FINDING OPTIMAL PROMPT PARAMETERS <==
+2025/06/01 04:40:48 INFO dspy.teleprompt.mipro_optimizer_v2: We will evaluate the program over a series of trials with different combinations of instructions and few-shot examples to find the optimal combination using Bayesian Optimization.
 
-2025/06/01 00:32:19 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 1 / 23 - Full Evaluation of Default Program ==
-Average Metric: 4.00 / 6 (66.7%):   2%|███▎                                                                                                                                                                                                      | 5/300 [00:03<03:47,  1.30it/s]2025/06/01 00:32:22 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 20.00 / 25 (80.0%):   8%|████████████████▌                                                                                                                                                                                      | 25/300 [00:09<01:39,  2.77it/s]2025/06/01 00:32:29 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 74.00 / 106 (69.8%):  35%|█████████████████████████████████████████████████████████████████████▌                                                                                                                               | 106/300 [00:34<00:59,  3.26it/s]2025/06/01 00:32:54 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 107.00 / 149 (71.8%):  50%|█████████████████████████████████████████████████████████████████████████████████████████████████▎                                                                                                  | 149/300 [00:50<00:56,  2.66it/s]2025/06/01 00:33:10 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 119.00 / 171 (69.6%):  57%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████                                                                                     | 170/300 [00:56<00:53,  2.45it/s]2025/06/01 00:33:16 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 145.00 / 204 (71.1%):  68%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                                               | 203/300 [01:07<00:26,  3.61it/s]2025/06/01 00:33:26 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 150.00 / 212 (70.8%):  71%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                                         | 212/300 [01:10<00:27,  3.21it/s]2025/06/01 00:33:29 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 186.00 / 263 (70.7%):  88%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                        | 263/300 [01:26<00:09,  3.78it/s]2025/06/01 00:33:46 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 188.00 / 266 (70.7%):  88%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                      | 265/300 [01:27<00:12,  2.79it/s]2025/06/01 00:33:47 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 193.00 / 274 (70.4%):  91%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████                 | 274/300 [01:31<00:11,  2.29it/s]2025/06/01 00:33:50 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 195.00 / 279 (69.9%):  93%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎             | 279/300 [01:32<00:05,  3.64it/s]2025/06/01 00:33:52 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 207.00 / 296 (69.9%):  98%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋   | 295/300 [01:38<00:01,  4.14it/s]2025/06/01 00:33:58 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 209.00 / 300 (69.7%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 300/300 [01:41<00:00,  2.95it/s]
-2025/06/01 00:34:00 INFO dspy.evaluate.evaluate: Average Metric: 209 / 300 (69.7%)
-2025/06/01 00:34:00 INFO dspy.teleprompt.mipro_optimizer_v2: Default program score: 69.67
+2025/06/01 04:40:48 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 1 / 23 - Full Evaluation of Default Program ==
+Average Metric: 13.00 / 23 (56.5%):   7%|████████▎                                                                                                         | 22/300 [00:07<01:10,  3.96it/s]2025/06/01 04:40:56 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+2025/06/01 04:40:57 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 17.00 / 28 (60.7%):   9%|██████████▋                                                                                                       | 28/300 [00:10<01:30,  3.02it/s]2025/06/01 04:40:58 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 37.00 / 61 (60.7%):  20%|███████████████████████▏                                                                                          | 61/300 [00:21<01:07,  3.54it/s]2025/06/01 04:41:10 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 49.00 / 79 (62.0%):  26%|█████████████████████████████▋                                                                                    | 78/300 [00:28<01:09,  3.21it/s]2025/06/01 04:41:16 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 50.00 / 80 (62.5%):  27%|██████████████████████████████▍                                                                                   | 80/300 [00:30<02:00,  1.83it/s]2025/06/01 04:41:18 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 69.00 / 114 (60.5%):  38%|██████████████████████████████████████████▌                                                                     | 114/300 [00:41<00:59,  3.12it/s]2025/06/01 04:41:29 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 82.00 / 132 (62.1%):  44%|█████████████████████████████████████████████████▎                                                              | 132/300 [00:48<01:10,  2.38it/s]2025/06/01 04:41:36 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 112.00 / 178 (62.9%):  59%|█████████████████████████████████████████████████████████████████▊                                             | 178/300 [01:04<00:54,  2.22it/s]2025/06/01 04:41:52 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 121.00 / 191 (63.4%):  63%|██████████████████████████████████████████████████████████████████████▎                                        | 190/300 [01:08<00:39,  2.81it/s]2025/06/01 04:41:57 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 155.00 / 238 (65.1%):  79%|████████████████████████████████████████████████████████████████████████████████████████                       | 238/300 [01:24<00:23,  2.66it/s]2025/06/01 04:42:13 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 164.00 / 256 (64.1%):  85%|██████████████████████████████████████████████████████████████████████████████████████████████▎                | 255/300 [01:31<00:24,  1.87it/s]2025/06/01 04:42:19 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 166.00 / 260 (63.8%):  87%|████████████████████████████████████████████████████████████████████████████████████████████████▏              | 260/300 [01:32<00:14,  2.78it/s]2025/06/01 04:42:21 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 169.00 / 264 (64.0%):  88%|█████████████████████████████████████████████████████████████████████████████████████████████████▎             | 263/300 [01:33<00:14,  2.48it/s]2025/06/01 04:42:22 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 176.00 / 277 (63.5%):  92%|██████████████████████████████████████████████████████████████████████████████████████████████████████         | 276/300 [01:38<00:09,  2.43it/s]2025/06/01 04:42:26 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 177.00 / 278 (63.7%):  93%|██████████████████████████████████████████████████████████████████████████████████████████████████████▊        | 278/300 [01:38<00:07,  3.01it/s]2025/06/01 04:42:27 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 183.00 / 288 (63.5%):  96%|██████████████████████████████████████████████████████████████████████████████████████████████████████████▏    | 287/300 [01:41<00:03,  3.85it/s]2025/06/01 04:42:30 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 191.00 / 300 (63.7%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████| 300/300 [01:45<00:00,  2.83it/s]
+2025/06/01 04:42:34 INFO dspy.evaluate.evaluate: Average Metric: 191 / 300 (63.7%)
+2025/06/01 04:42:34 INFO dspy.teleprompt.mipro_optimizer_v2: Default program score: 63.67
 
 /opt/homebrew/Caskroom/miniconda/base/envs/cs152/lib/python3.11/site-packages/optuna/samplers/_tpe/sampler.py:295: ExperimentalWarning: ``multivariate`` option is an experimental feature. The interface can change in the future.
   warnings.warn(
-2025/06/01 00:34:00 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 2 / 23 - Minibatch ==
-Average Metric: 16.00 / 21 (76.2%):  57%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                                                                                     | 20/35 [00:08<00:05,  2.51it/s]2025/06/01 00:34:09 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 29.00 / 35 (82.9%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:13<00:00,  2.58it/s]
-2025/06/01 00:34:14 INFO dspy.evaluate.evaluate: Average Metric: 29 / 35 (82.9%)
-2025/06/01 00:34:14 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 82.86 on minibatch of size 35 with parameters ['Predictor 0: Instruction 1', 'Predictor 0: Few-Shot Set 6'].
-2025/06/01 00:34:14 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86]
-2025/06/01 00:34:14 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67]
-2025/06/01 00:34:14 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 69.67
-2025/06/01 00:34:14 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
+2025/06/01 04:42:34 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 2 / 23 - Minibatch ==
+Average Metric: 27.00 / 35 (77.1%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:10<00:00,  3.25it/s]
+2025/06/01 04:42:45 INFO dspy.evaluate.evaluate: Average Metric: 27 / 35 (77.1%)
+2025/06/01 04:42:45 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 77.14 on minibatch of size 35 with parameters ['Predictor 0: Instruction 1', 'Predictor 0: Few-Shot Set 6'].
+2025/06/01 04:42:45 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14]
+2025/06/01 04:42:45 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67]
+2025/06/01 04:42:45 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 63.67
+2025/06/01 04:42:45 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
 
 
-2025/06/01 00:34:14 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 3 / 23 - Minibatch ==
-Average Metric: 26.00 / 35 (74.3%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:12<00:00,  2.90it/s]
-2025/06/01 00:34:26 INFO dspy.evaluate.evaluate: Average Metric: 26 / 35 (74.3%)
-2025/06/01 00:34:26 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 74.29 on minibatch of size 35 with parameters ['Predictor 0: Instruction 4', 'Predictor 0: Few-Shot Set 2'].
-2025/06/01 00:34:26 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29]
-2025/06/01 00:34:26 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67]
-2025/06/01 00:34:26 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 69.67
-2025/06/01 00:34:26 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
+2025/06/01 04:42:45 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 3 / 23 - Minibatch ==
+Average Metric: 23.00 / 35 (65.7%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:11<00:00,  3.04it/s]
+2025/06/01 04:42:56 INFO dspy.evaluate.evaluate: Average Metric: 23 / 35 (65.7%)
+2025/06/01 04:42:56 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 65.71 on minibatch of size 35 with parameters ['Predictor 0: Instruction 4', 'Predictor 0: Few-Shot Set 2'].
+2025/06/01 04:42:56 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71]
+2025/06/01 04:42:56 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67]
+2025/06/01 04:42:56 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 63.67
+2025/06/01 04:42:56 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
 
 
-2025/06/01 00:34:26 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 4 / 23 - Minibatch ==
-Average Metric: 1.00 / 1 (100.0%):   3%|█████▊                                                                                                                                                                                                    | 1/35 [00:01<01:05,  1.91s/it]2025/06/01 00:34:28 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 26.00 / 35 (74.3%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:13<00:00,  2.67it/s]
-2025/06/01 00:34:39 INFO dspy.evaluate.evaluate: Average Metric: 26 / 35 (74.3%)
-2025/06/01 00:34:39 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 74.29 on minibatch of size 35 with parameters ['Predictor 0: Instruction 0', 'Predictor 0: Few-Shot Set 6'].
-2025/06/01 00:34:39 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29]
-2025/06/01 00:34:39 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67]
-2025/06/01 00:34:39 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 69.67
-2025/06/01 00:34:39 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
+2025/06/01 04:42:56 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 4 / 23 - Minibatch ==
+Average Metric: 24.00 / 35 (68.6%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:11<00:00,  3.15it/s]
+2025/06/01 04:43:07 INFO dspy.evaluate.evaluate: Average Metric: 24 / 35 (68.6%)
+2025/06/01 04:43:07 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 68.57 on minibatch of size 35 with parameters ['Predictor 0: Instruction 0', 'Predictor 0: Few-Shot Set 6'].
+2025/06/01 04:43:07 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57]
+2025/06/01 04:43:07 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67]
+2025/06/01 04:43:07 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 63.67
+2025/06/01 04:43:07 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
 
 
-2025/06/01 00:34:39 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 5 / 23 - Minibatch ==
-Average Metric: 22.00 / 35 (62.9%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:12<00:00,  2.78it/s]
-2025/06/01 00:34:52 INFO dspy.evaluate.evaluate: Average Metric: 22 / 35 (62.9%)
-2025/06/01 00:34:52 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 62.86 on minibatch of size 35 with parameters ['Predictor 0: Instruction 2', 'Predictor 0: Few-Shot Set 4'].
-2025/06/01 00:34:52 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86]
-2025/06/01 00:34:52 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67]
-2025/06/01 00:34:52 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 69.67
-2025/06/01 00:34:52 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
+2025/06/01 04:43:07 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 5 / 23 - Minibatch ==
+Average Metric: 23.00 / 35 (65.7%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:11<00:00,  3.02it/s]
+2025/06/01 04:43:19 INFO dspy.evaluate.evaluate: Average Metric: 23 / 35 (65.7%)
+2025/06/01 04:43:19 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 65.71 on minibatch of size 35 with parameters ['Predictor 0: Instruction 2', 'Predictor 0: Few-Shot Set 4'].
+2025/06/01 04:43:19 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71]
+2025/06/01 04:43:19 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67]
+2025/06/01 04:43:19 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 63.67
+2025/06/01 04:43:19 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
 
 
-2025/06/01 00:34:52 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 6 / 23 - Minibatch ==
-Average Metric: 24.00 / 35 (68.6%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:12<00:00,  2.86it/s]
-2025/06/01 00:35:04 INFO dspy.evaluate.evaluate: Average Metric: 24 / 35 (68.6%)
-2025/06/01 00:35:04 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 68.57 on minibatch of size 35 with parameters ['Predictor 0: Instruction 3', 'Predictor 0: Few-Shot Set 5'].
-2025/06/01 00:35:04 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57]
-2025/06/01 00:35:04 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67]
-2025/06/01 00:35:04 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 69.67
-2025/06/01 00:35:04 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
+2025/06/01 04:43:19 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 6 / 23 - Minibatch ==
+Average Metric: 26.00 / 35 (74.3%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:13<00:00,  2.65it/s]
+2025/06/01 04:43:32 INFO dspy.evaluate.evaluate: Average Metric: 26 / 35 (74.3%)
+2025/06/01 04:43:32 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 74.29 on minibatch of size 35 with parameters ['Predictor 0: Instruction 3', 'Predictor 0: Few-Shot Set 5'].
+2025/06/01 04:43:32 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29]
+2025/06/01 04:43:32 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67]
+2025/06/01 04:43:32 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 63.67
+2025/06/01 04:43:32 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
 
 
-2025/06/01 00:35:04 INFO dspy.teleprompt.mipro_optimizer_v2: ===== Trial 7 / 23 - Full Evaluation =====
-2025/06/01 00:35:04 INFO dspy.teleprompt.mipro_optimizer_v2: Doing full eval on next top averaging program (Avg Score: 82.86) from minibatch trials...
-Average Metric: 8.00 / 13 (61.5%):   4%|████████                                                                                                                                                                                                | 12/300 [00:05<01:54,  2.51it/s]2025/06/01 00:35:10 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 46.00 / 72 (63.9%):  24%|███████████████████████████████████████████████▊                                                                                                                                                       | 72/300 [00:23<01:13,  3.11it/s]2025/06/01 00:35:29 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 67.00 / 97 (69.1%):  32%|███████████████████████████████████████████████████████████████▋                                                                                                                                       | 96/300 [00:31<00:57,  3.58it/s]2025/06/01 00:35:36 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 73.00 / 103 (70.9%):  34%|██████████████████████████████████████████████████████████████████▉                                                                                                                                  | 102/300 [00:33<00:55,  3.59it/s]2025/06/01 00:35:38 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 82.00 / 115 (71.3%):  38%|███████████████████████████████████████████████████████████████████████████▌                                                                                                                         | 115/300 [00:38<01:00,  3.04it/s]2025/06/01 00:35:43 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 100.00 / 138 (72.5%):  46%|█████████████████████████████████████████████████████████████████████████████████████████▌                                                                                                          | 137/300 [00:44<00:58,  2.79it/s]2025/06/01 00:35:49 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 108.00 / 147 (73.5%):  49%|████████████████████████████████████████████████████████████████████████████████████████████████                                                                                                    | 147/300 [00:48<00:47,  3.22it/s]2025/06/01 00:35:53 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 112.00 / 152 (73.7%):  50%|██████████████████████████████████████████████████████████████████████████████████████████████████▋                                                                                                 | 151/300 [00:49<00:48,  3.10it/s]2025/06/01 00:35:54 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 132.00 / 189 (69.8%):  63%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                                                         | 188/300 [01:00<00:32,  3.46it/s]2025/06/01 00:36:05 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 145.00 / 203 (71.4%):  68%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                                               | 203/300 [01:05<00:36,  2.63it/s]2025/06/01 00:36:10 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 176.00 / 241 (73.0%):  80%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                       | 240/300 [01:15<00:18,  3.22it/s]2025/06/01 00:36:20 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 180.00 / 246 (73.2%):  82%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                   | 246/300 [01:17<00:14,  3.83it/s]2025/06/01 00:36:22 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 185.00 / 253 (73.1%):  84%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                              | 253/300 [01:19<00:15,  2.95it/s]2025/06/01 00:36:24 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 191.00 / 263 (72.6%):  88%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                        | 263/300 [01:22<00:11,  3.27it/s]2025/06/01 00:36:27 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 205.00 / 283 (72.4%):  94%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉           | 283/300 [01:28<00:06,  2.73it/s]2025/06/01 00:36:33 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 213.00 / 293 (72.7%):  97%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊     | 292/300 [01:31<00:02,  3.78it/s]2025/06/01 00:36:36 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 217.00 / 300 (72.3%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 300/300 [01:35<00:00,  3.15it/s]
-2025/06/01 00:36:39 INFO dspy.evaluate.evaluate: Average Metric: 217 / 300 (72.3%)
-2025/06/01 00:36:39 INFO dspy.teleprompt.mipro_optimizer_v2: New best full eval score! Score: 72.33
-2025/06/01 00:36:39 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33]
-2025/06/01 00:36:39 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:36:39 INFO dspy.teleprompt.mipro_optimizer_v2: =======================
-2025/06/01 00:36:39 INFO dspy.teleprompt.mipro_optimizer_v2: 
+2025/06/01 04:43:32 INFO dspy.teleprompt.mipro_optimizer_v2: ===== Trial 7 / 23 - Full Evaluation =====
+2025/06/01 04:43:32 INFO dspy.teleprompt.mipro_optimizer_v2: Doing full eval on next top averaging program (Avg Score: 77.14) from minibatch trials...
+Average Metric: 198.00 / 300 (66.0%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████| 300/300 [01:24<00:00,  3.55it/s]
+2025/06/01 04:44:57 INFO dspy.evaluate.evaluate: Average Metric: 198 / 300 (66.0%)
+2025/06/01 04:44:57 INFO dspy.teleprompt.mipro_optimizer_v2: New best full eval score! Score: 66.0
+2025/06/01 04:44:57 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0]
+2025/06/01 04:44:57 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 66.0
+2025/06/01 04:44:57 INFO dspy.teleprompt.mipro_optimizer_v2: =======================
+2025/06/01 04:44:57 INFO dspy.teleprompt.mipro_optimizer_v2: 
 
-2025/06/01 00:36:39 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 8 / 23 - Minibatch ==
-Average Metric: 11.00 / 19 (57.9%):  54%|████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                                                                           | 19/35 [00:09<00:09,  1.76it/s]2025/06/01 00:36:49 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 23.00 / 35 (65.7%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:14<00:00,  2.35it/s]
-2025/06/01 00:36:54 INFO dspy.evaluate.evaluate: Average Metric: 23 / 35 (65.7%)
-2025/06/01 00:36:54 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 65.71 on minibatch of size 35 with parameters ['Predictor 0: Instruction 4', 'Predictor 0: Few-Shot Set 6'].
-2025/06/01 00:36:54 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71]
-2025/06/01 00:36:54 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33]
-2025/06/01 00:36:54 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:36:54 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
+2025/06/01 04:44:57 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 8 / 23 - Minibatch ==
+Average Metric: 24.00 / 35 (68.6%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:11<00:00,  3.01it/s]
+2025/06/01 04:45:08 INFO dspy.evaluate.evaluate: Average Metric: 24 / 35 (68.6%)
+2025/06/01 04:45:08 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 68.57 on minibatch of size 35 with parameters ['Predictor 0: Instruction 4', 'Predictor 0: Few-Shot Set 6'].
+2025/06/01 04:45:08 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57]
+2025/06/01 04:45:08 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0]
+2025/06/01 04:45:08 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 66.0
+2025/06/01 04:45:08 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
 
 
-2025/06/01 00:36:54 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 9 / 23 - Minibatch ==
-Average Metric: 24.00 / 35 (68.6%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:13<00:00,  2.52it/s]
-2025/06/01 00:37:08 INFO dspy.evaluate.evaluate: Average Metric: 24 / 35 (68.6%)
-2025/06/01 00:37:08 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 68.57 on minibatch of size 35 with parameters ['Predictor 0: Instruction 5', 'Predictor 0: Few-Shot Set 1'].
-2025/06/01 00:37:08 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71, 68.57]
-2025/06/01 00:37:08 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33]
-2025/06/01 00:37:08 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:37:08 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
+2025/06/01 04:45:08 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 9 / 23 - Minibatch ==
+Average Metric: 22.00 / 35 (62.9%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:12<00:00,  2.81it/s]
+2025/06/01 04:45:21 INFO dspy.evaluate.evaluate: Average Metric: 22 / 35 (62.9%)
+2025/06/01 04:45:21 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 62.86 on minibatch of size 35 with parameters ['Predictor 0: Instruction 5', 'Predictor 0: Few-Shot Set 1'].
+2025/06/01 04:45:21 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57, 62.86]
+2025/06/01 04:45:21 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0]
+2025/06/01 04:45:21 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 66.0
+2025/06/01 04:45:21 INFO dspy.teleprompt.mipro_optimizer_v2: =========================================
 
 
-2025/06/01 00:37:08 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 10 / 23 - Minibatch ==
-Average Metric: 23.00 / 35 (65.7%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:12<00:00,  2.87it/s]
-2025/06/01 00:37:20 INFO dspy.evaluate.evaluate: Average Metric: 23 / 35 (65.7%)
-2025/06/01 00:37:20 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 65.71 on minibatch of size 35 with parameters ['Predictor 0: Instruction 3', 'Predictor 0: Few-Shot Set 3'].
-2025/06/01 00:37:20 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71, 68.57, 65.71]
-2025/06/01 00:37:20 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33]
-2025/06/01 00:37:20 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:37:20 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
+2025/06/01 04:45:21 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 10 / 23 - Minibatch ==
+Average Metric: 18.00 / 35 (51.4%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:12<00:00,  2.84it/s]
+2025/06/01 04:45:33 INFO dspy.evaluate.evaluate: Average Metric: 18 / 35 (51.4%)
+2025/06/01 04:45:33 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 51.43 on minibatch of size 35 with parameters ['Predictor 0: Instruction 3', 'Predictor 0: Few-Shot Set 3'].
+2025/06/01 04:45:33 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57, 62.86, 51.43]
+2025/06/01 04:45:33 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0]
+2025/06/01 04:45:33 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 66.0
+2025/06/01 04:45:33 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
 
 
-2025/06/01 00:37:20 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 11 / 23 - Minibatch ==
-2025/06/01 00:37:20 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 26.00 / 35 (74.3%): 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:00<00:00, 1460.70it/s]
-2025/06/01 00:37:21 INFO dspy.evaluate.evaluate: Average Metric: 26 / 35 (74.3%)
-2025/06/01 00:37:21 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 74.29 on minibatch of size 35 with parameters ['Predictor 0: Instruction 1', 'Predictor 0: Few-Shot Set 6'].
-2025/06/01 00:37:21 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71, 68.57, 65.71, 74.29]
-2025/06/01 00:37:21 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33]
-2025/06/01 00:37:21 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:37:21 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
+2025/06/01 04:45:33 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 11 / 23 - Minibatch ==
+Average Metric: 26.00 / 35 (74.3%): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:00<00:00, 8684.89it/s]
+2025/06/01 04:45:33 INFO dspy.evaluate.evaluate: Average Metric: 26 / 35 (74.3%)
+2025/06/01 04:45:33 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 74.29 on minibatch of size 35 with parameters ['Predictor 0: Instruction 1', 'Predictor 0: Few-Shot Set 6'].
+2025/06/01 04:45:33 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57, 62.86, 51.43, 74.29]
+2025/06/01 04:45:33 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0]
+2025/06/01 04:45:33 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 66.0
+2025/06/01 04:45:33 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
 
 
-2025/06/01 00:37:21 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 12 / 23 - Minibatch ==
-Average Metric: 24.00 / 35 (68.6%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:11<00:00,  2.92it/s]
-2025/06/01 00:37:33 INFO dspy.evaluate.evaluate: Average Metric: 24 / 35 (68.6%)
-2025/06/01 00:37:33 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 68.57 on minibatch of size 35 with parameters ['Predictor 0: Instruction 4', 'Predictor 0: Few-Shot Set 2'].
-2025/06/01 00:37:33 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71, 68.57, 65.71, 74.29, 68.57]
-2025/06/01 00:37:33 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33]
-2025/06/01 00:37:33 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:37:33 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
+2025/06/01 04:45:33 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 12 / 23 - Minibatch ==
+Average Metric: 20.00 / 35 (57.1%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:12<00:00,  2.79it/s]
+2025/06/01 04:45:46 INFO dspy.evaluate.evaluate: Average Metric: 20 / 35 (57.1%)
+2025/06/01 04:45:46 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 57.14 on minibatch of size 35 with parameters ['Predictor 0: Instruction 3', 'Predictor 0: Few-Shot Set 10'].
+2025/06/01 04:45:46 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57, 62.86, 51.43, 74.29, 57.14]
+2025/06/01 04:45:46 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0]
+2025/06/01 04:45:46 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 66.0
+2025/06/01 04:45:46 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
 
 
-2025/06/01 00:37:33 INFO dspy.teleprompt.mipro_optimizer_v2: ===== Trial 13 / 23 - Full Evaluation =====
-2025/06/01 00:37:33 INFO dspy.teleprompt.mipro_optimizer_v2: Doing full eval on next top averaging program (Avg Score: 74.29) from minibatch trials...
-Average Metric: 32.00 / 47 (68.1%):  16%|███████████████████████████████▏                                                                                                                                                                       | 47/300 [00:12<01:04,  3.93it/s]2025/06/01 00:37:46 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 47.00 / 72 (65.3%):  24%|███████████████████████████████████████████████▊                                                                                                                                                       | 72/300 [00:20<00:58,  3.87it/s]2025/06/01 00:37:53 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 51.00 / 78 (65.4%):  26%|███████████████████████████████████████████████████▋                                                                                                                                                   | 78/300 [00:22<01:17,  2.87it/s]2025/06/01 00:37:55 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 54.00 / 81 (66.7%):  27%|█████████████████████████████████████████████████████                                                                                                                                                  | 80/300 [00:22<01:14,  2.95it/s]2025/06/01 00:37:55 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 63.00 / 92 (68.5%):  31%|█████████████████████████████████████████████████████████████                                                                                                                                          | 92/300 [00:26<01:17,  2.67it/s]2025/06/01 00:37:59 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 74.00 / 105 (70.5%):  35%|████████████████████████████████████████████████████████████████████▉                                                                                                                                | 105/300 [00:30<00:43,  4.53it/s]2025/06/01 00:38:03 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 116.00 / 163 (71.2%):  54%|██████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                                                                         | 163/300 [00:46<00:31,  4.41it/s]2025/06/01 00:38:19 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 117.00 / 168 (69.6%):  56%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                                                                      | 168/300 [00:48<00:43,  3.01it/s]2025/06/01 00:38:21 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 134.00 / 193 (69.4%):  64%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                                                      | 192/300 [00:55<01:08,  1.57it/s]2025/06/01 00:38:29 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 141.00 / 201 (70.1%):  67%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                                                                | 201/300 [00:58<00:24,  4.04it/s]2025/06/01 00:38:31 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 156.00 / 220 (70.9%):  73%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                                    | 220/300 [01:05<00:30,  2.63it/s]2025/06/01 00:38:39 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 169.00 / 237 (71.3%):  79%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                         | 236/300 [01:10<00:16,  3.89it/s]2025/06/01 00:38:44 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 176.00 / 245 (71.8%):  82%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████                                    | 245/300 [01:13<00:14,  3.78it/s]2025/06/01 00:38:46 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 183.00 / 255 (71.8%):  85%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                              | 254/300 [01:15<00:09,  4.87it/s]2025/06/01 00:38:49 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 186.00 / 261 (71.3%):  87%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                          | 260/300 [01:18<00:15,  2.55it/s]2025/06/01 00:38:51 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 191.00 / 268 (71.3%):  89%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                     | 267/300 [01:20<00:10,  3.18it/s]2025/06/01 00:38:53 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 210.00 / 294 (71.4%):  98%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████    | 294/300 [01:27<00:01,  5.40it/s]2025/06/01 00:39:00 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 213.00 / 300 (71.0%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 300/300 [01:32<00:00,  3.23it/s]
-2025/06/01 00:39:06 INFO dspy.evaluate.evaluate: Average Metric: 213 / 300 (71.0%)
-2025/06/01 00:39:06 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33, 71.0]
-2025/06/01 00:39:06 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:39:06 INFO dspy.teleprompt.mipro_optimizer_v2: =======================
-2025/06/01 00:39:06 INFO dspy.teleprompt.mipro_optimizer_v2: 
+2025/06/01 04:45:46 INFO dspy.teleprompt.mipro_optimizer_v2: ===== Trial 13 / 23 - Full Evaluation =====
+2025/06/01 04:45:46 INFO dspy.teleprompt.mipro_optimizer_v2: Doing full eval on next top averaging program (Avg Score: 74.29) from minibatch trials...
+Average Metric: 204.00 / 300 (68.0%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████| 300/300 [01:29<00:00,  3.36it/s]
+2025/06/01 04:47:15 INFO dspy.evaluate.evaluate: Average Metric: 204 / 300 (68.0%)
+2025/06/01 04:47:15 INFO dspy.teleprompt.mipro_optimizer_v2: New best full eval score! Score: 68.0
+2025/06/01 04:47:15 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0, 68.0]
+2025/06/01 04:47:15 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 68.0
+2025/06/01 04:47:15 INFO dspy.teleprompt.mipro_optimizer_v2: =======================
+2025/06/01 04:47:15 INFO dspy.teleprompt.mipro_optimizer_v2: 
 
-2025/06/01 00:39:06 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 14 / 23 - Minibatch ==
-Average Metric: 25.00 / 35 (71.4%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:11<00:00,  2.96it/s]
-2025/06/01 00:39:17 INFO dspy.evaluate.evaluate: Average Metric: 25 / 35 (71.4%)
-2025/06/01 00:39:17 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 71.43 on minibatch of size 35 with parameters ['Predictor 0: Instruction 1', 'Predictor 0: Few-Shot Set 2'].
-2025/06/01 00:39:17 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71, 68.57, 65.71, 74.29, 68.57, 71.43]
-2025/06/01 00:39:17 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33, 71.0]
-2025/06/01 00:39:17 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:39:17 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
+2025/06/01 04:47:15 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 14 / 23 - Minibatch ==
+Average Metric: 27.00 / 35 (77.1%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:00<00:00, 19389.86it/s]
+2025/06/01 04:47:15 INFO dspy.evaluate.evaluate: Average Metric: 27 / 35 (77.1%)
+2025/06/01 04:47:15 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 77.14 on minibatch of size 35 with parameters ['Predictor 0: Instruction 3', 'Predictor 0: Few-Shot Set 5'].
+2025/06/01 04:47:15 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57, 62.86, 51.43, 74.29, 57.14, 77.14]
+2025/06/01 04:47:15 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0, 68.0]
+2025/06/01 04:47:15 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 68.0
+2025/06/01 04:47:15 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
 
 
-2025/06/01 00:39:17 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 15 / 23 - Minibatch ==
-Average Metric: 15.00 / 15 (100.0%):  40%|███████████████████████████████████████████████████████████████████████████████▌                                                                                                                       | 14/35 [00:05<00:05,  3.63it/s]2025/06/01 00:39:23 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 30.00 / 35 (85.7%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:11<00:00,  2.99it/s]
-2025/06/01 00:39:29 INFO dspy.evaluate.evaluate: Average Metric: 30 / 35 (85.7%)
-2025/06/01 00:39:29 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 85.71 on minibatch of size 35 with parameters ['Predictor 0: Instruction 4', 'Predictor 0: Few-Shot Set 8'].
-2025/06/01 00:39:29 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71, 68.57, 65.71, 74.29, 68.57, 71.43, 85.71]
-2025/06/01 00:39:29 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33, 71.0]
-2025/06/01 00:39:29 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:39:29 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
+2025/06/01 04:47:15 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 15 / 23 - Minibatch ==
+Average Metric: 26.00 / 35 (74.3%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:10<00:00,  3.32it/s]
+2025/06/01 04:47:26 INFO dspy.evaluate.evaluate: Average Metric: 26 / 35 (74.3%)
+2025/06/01 04:47:26 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 74.29 on minibatch of size 35 with parameters ['Predictor 0: Instruction 1', 'Predictor 0: Few-Shot Set 9'].
+2025/06/01 04:47:26 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57, 62.86, 51.43, 74.29, 57.14, 77.14, 74.29]
+2025/06/01 04:47:26 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0, 68.0]
+2025/06/01 04:47:26 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 68.0
+2025/06/01 04:47:26 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
 
 
-2025/06/01 00:39:29 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 16 / 23 - Minibatch ==
-Average Metric: 28.00 / 35 (80.0%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:10<00:00,  3.22it/s]
-2025/06/01 00:39:40 INFO dspy.evaluate.evaluate: Average Metric: 28 / 35 (80.0%)
-2025/06/01 00:39:40 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 80.0 on minibatch of size 35 with parameters ['Predictor 0: Instruction 4', 'Predictor 0: Few-Shot Set 8'].
-2025/06/01 00:39:40 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71, 68.57, 65.71, 74.29, 68.57, 71.43, 85.71, 80.0]
-2025/06/01 00:39:40 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33, 71.0]
-2025/06/01 00:39:40 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:39:40 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
+2025/06/01 04:47:26 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 16 / 23 - Minibatch ==
+Average Metric: 27.00 / 35 (77.1%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:11<00:00,  2.96it/s]
+2025/06/01 04:47:37 INFO dspy.evaluate.evaluate: Average Metric: 27 / 35 (77.1%)
+2025/06/01 04:47:37 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 77.14 on minibatch of size 35 with parameters ['Predictor 0: Instruction 2', 'Predictor 0: Few-Shot Set 5'].
+2025/06/01 04:47:37 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57, 62.86, 51.43, 74.29, 57.14, 77.14, 74.29, 77.14]
+2025/06/01 04:47:37 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0, 68.0]
+2025/06/01 04:47:37 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 68.0
+2025/06/01 04:47:37 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
 
 
-2025/06/01 00:39:40 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 17 / 23 - Minibatch ==
-Average Metric: 26.00 / 35 (74.3%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:11<00:00,  2.94it/s]
-2025/06/01 00:39:52 INFO dspy.evaluate.evaluate: Average Metric: 26 / 35 (74.3%)
-2025/06/01 00:39:52 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 74.29 on minibatch of size 35 with parameters ['Predictor 0: Instruction 5', 'Predictor 0: Few-Shot Set 8'].
-2025/06/01 00:39:52 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71, 68.57, 65.71, 74.29, 68.57, 71.43, 85.71, 80.0, 74.29]
-2025/06/01 00:39:52 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33, 71.0]
-2025/06/01 00:39:52 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:39:52 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
+2025/06/01 04:47:37 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 17 / 23 - Minibatch ==
+Average Metric: 15.00 / 35 (42.9%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:10<00:00,  3.36it/s]
+2025/06/01 04:47:48 INFO dspy.evaluate.evaluate: Average Metric: 15 / 35 (42.9%)
+2025/06/01 04:47:48 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 42.86 on minibatch of size 35 with parameters ['Predictor 0: Instruction 5', 'Predictor 0: Few-Shot Set 8'].
+2025/06/01 04:47:48 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57, 62.86, 51.43, 74.29, 57.14, 77.14, 74.29, 77.14, 42.86]
+2025/06/01 04:47:48 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0, 68.0]
+2025/06/01 04:47:48 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 68.0
+2025/06/01 04:47:48 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
 
 
-2025/06/01 00:39:52 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 18 / 23 - Minibatch ==
-Average Metric: 21.00 / 35 (60.0%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:12<00:00,  2.88it/s]
-2025/06/01 00:40:04 INFO dspy.evaluate.evaluate: Average Metric: 21 / 35 (60.0%)
-2025/06/01 00:40:04 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 60.0 on minibatch of size 35 with parameters ['Predictor 0: Instruction 1', 'Predictor 0: Few-Shot Set 10'].
-2025/06/01 00:40:04 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71, 68.57, 65.71, 74.29, 68.57, 71.43, 85.71, 80.0, 74.29, 60.0]
-2025/06/01 00:40:04 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33, 71.0]
-2025/06/01 00:40:04 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:40:04 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
+2025/06/01 04:47:48 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 18 / 23 - Minibatch ==
+Average Metric: 25.00 / 35 (71.4%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:13<00:00,  2.62it/s]
+2025/06/01 04:48:01 INFO dspy.evaluate.evaluate: Average Metric: 25 / 35 (71.4%)
+2025/06/01 04:48:01 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 71.43 on minibatch of size 35 with parameters ['Predictor 0: Instruction 1', 'Predictor 0: Few-Shot Set 5'].
+2025/06/01 04:48:01 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57, 62.86, 51.43, 74.29, 57.14, 77.14, 74.29, 77.14, 42.86, 71.43]
+2025/06/01 04:48:01 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0, 68.0]
+2025/06/01 04:48:01 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 68.0
+2025/06/01 04:48:01 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
 
 
-2025/06/01 00:40:04 INFO dspy.teleprompt.mipro_optimizer_v2: ===== Trial 19 / 23 - Full Evaluation =====
-2025/06/01 00:40:04 INFO dspy.teleprompt.mipro_optimizer_v2: Doing full eval on next top averaging program (Avg Score: 82.85499999999999) from minibatch trials...
-Average Metric: 4.00 / 6 (66.7%):   2%|████                                                                                                                                                                                                      | 6/300 [00:02<01:31,  3.23it/s]2025/06/01 00:40:07 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 17.00 / 24 (70.8%):   8%|███████████████▉                                                                                                                                                                                       | 24/300 [00:06<01:06,  4.17it/s]2025/06/01 00:40:11 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 63.00 / 94 (67.0%):  31%|█████████████████████████████████████████████████████████████▋                                                                                                                                         | 93/300 [00:25<01:03,  3.27it/s]2025/06/01 00:40:30 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 210.00 / 300 (70.0%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 300/300 [01:18<00:00,  3.81it/s]
-2025/06/01 00:41:23 INFO dspy.evaluate.evaluate: Average Metric: 210 / 300 (70.0%)
-2025/06/01 00:41:23 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33, 71.0, 70.0]
-2025/06/01 00:41:23 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:41:23 INFO dspy.teleprompt.mipro_optimizer_v2: =======================
-2025/06/01 00:41:23 INFO dspy.teleprompt.mipro_optimizer_v2: 
+2025/06/01 04:48:01 INFO dspy.teleprompt.mipro_optimizer_v2: ===== Trial 19 / 23 - Full Evaluation =====
+2025/06/01 04:48:01 INFO dspy.teleprompt.mipro_optimizer_v2: Doing full eval on next top averaging program (Avg Score: 77.14) from minibatch trials...
+Average Metric: 203.00 / 300 (67.7%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████| 300/300 [01:25<00:00,  3.49it/s]
+2025/06/01 04:49:27 INFO dspy.evaluate.evaluate: Average Metric: 203 / 300 (67.7%)
+2025/06/01 04:49:27 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0, 68.0, 67.67]
+2025/06/01 04:49:27 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 68.0
+2025/06/01 04:49:27 INFO dspy.teleprompt.mipro_optimizer_v2: =======================
+2025/06/01 04:49:27 INFO dspy.teleprompt.mipro_optimizer_v2: 
 
-2025/06/01 00:41:23 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 20 / 23 - Minibatch ==
-Average Metric: 24.00 / 35 (68.6%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:10<00:00,  3.23it/s]
-2025/06/01 00:41:34 INFO dspy.evaluate.evaluate: Average Metric: 24 / 35 (68.6%)
-2025/06/01 00:41:34 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 68.57 on minibatch of size 35 with parameters ['Predictor 0: Instruction 2', 'Predictor 0: Few-Shot Set 9'].
-2025/06/01 00:41:34 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71, 68.57, 65.71, 74.29, 68.57, 71.43, 85.71, 80.0, 74.29, 60.0, 68.57]
-2025/06/01 00:41:34 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33, 71.0, 70.0]
-2025/06/01 00:41:34 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:41:34 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
+2025/06/01 04:49:27 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 20 / 23 - Minibatch ==
+Average Metric: 23.00 / 35 (65.7%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:11<00:00,  3.00it/s]
+2025/06/01 04:49:39 INFO dspy.evaluate.evaluate: Average Metric: 23 / 35 (65.7%)
+2025/06/01 04:49:39 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 65.71 on minibatch of size 35 with parameters ['Predictor 0: Instruction 1', 'Predictor 0: Few-Shot Set 7'].
+2025/06/01 04:49:39 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57, 62.86, 51.43, 74.29, 57.14, 77.14, 74.29, 77.14, 42.86, 71.43, 65.71]
+2025/06/01 04:49:39 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0, 68.0, 67.67]
+2025/06/01 04:49:39 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 68.0
+2025/06/01 04:49:39 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
 
 
-2025/06/01 00:41:34 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 21 / 23 - Minibatch ==
-Average Metric: 25.00 / 35 (71.4%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:14<00:00,  2.49it/s]
-2025/06/01 00:41:48 INFO dspy.evaluate.evaluate: Average Metric: 25 / 35 (71.4%)
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 71.43 on minibatch of size 35 with parameters ['Predictor 0: Instruction 2', 'Predictor 0: Few-Shot Set 11'].
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71, 68.57, 65.71, 74.29, 68.57, 71.43, 85.71, 80.0, 74.29, 60.0, 68.57, 71.43]
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33, 71.0, 70.0]
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
+2025/06/01 04:49:39 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 21 / 23 - Minibatch ==
+Average Metric: 20.00 / 35 (57.1%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:11<00:00,  3.06it/s]
+2025/06/01 04:49:50 INFO dspy.evaluate.evaluate: Average Metric: 20 / 35 (57.1%)
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 57.14 on minibatch of size 35 with parameters ['Predictor 0: Instruction 5', 'Predictor 0: Few-Shot Set 11'].
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57, 62.86, 51.43, 74.29, 57.14, 77.14, 74.29, 77.14, 42.86, 71.43, 65.71, 57.14]
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0, 68.0, 67.67]
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 68.0
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
 
 
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 22 / 23 - Minibatch ==
-Average Metric: 23.00 / 35 (65.7%): 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:00<00:00, 3961.48it/s]
-2025/06/01 00:41:48 INFO dspy.evaluate.evaluate: Average Metric: 23 / 35 (65.7%)
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 65.71 on minibatch of size 35 with parameters ['Predictor 0: Instruction 4', 'Predictor 0: Few-Shot Set 8'].
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [82.86, 74.29, 74.29, 62.86, 68.57, 65.71, 68.57, 65.71, 74.29, 68.57, 71.43, 85.71, 80.0, 74.29, 60.0, 68.57, 71.43, 65.71]
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33, 71.0, 70.0]
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: == Trial 22 / 23 - Minibatch ==
+Average Metric: 22.00 / 35 (62.9%): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 35/35 [00:00<00:00, 7707.69it/s]
+2025/06/01 04:49:50 INFO dspy.evaluate.evaluate: Average Metric: 22 / 35 (62.9%)
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: Score: 62.86 on minibatch of size 35 with parameters ['Predictor 0: Instruction 2', 'Predictor 0: Few-Shot Set 5'].
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: Minibatch scores so far: [77.14, 65.71, 68.57, 65.71, 74.29, 68.57, 62.86, 51.43, 74.29, 57.14, 77.14, 74.29, 77.14, 42.86, 71.43, 65.71, 57.14, 62.86]
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0, 68.0, 67.67]
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 68.0
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: ==========================================
 
 
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: ===== Trial 23 / 23 - Full Evaluation =====
-2025/06/01 00:41:48 INFO dspy.teleprompt.mipro_optimizer_v2: Doing full eval on next top averaging program (Avg Score: 74.29) from minibatch trials...
-Average Metric: 26.00 / 37 (70.3%):  12%|████████████████████████▌                                                                                                                                                                              | 37/300 [00:10<01:19,  3.30it/s]2025/06/01 00:41:59 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
-Average Metric: 213.00 / 300 (71.0%): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 300/300 [01:27<00:00,  3.43it/s]
-2025/06/01 00:43:16 INFO dspy.evaluate.evaluate: Average Metric: 213 / 300 (71.0%)
-2025/06/01 00:43:16 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [69.67, 72.33, 71.0, 70.0, 71.0]
-2025/06/01 00:43:16 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 72.33
-2025/06/01 00:43:16 INFO dspy.teleprompt.mipro_optimizer_v2: =======================
-2025/06/01 00:43:16 INFO dspy.teleprompt.mipro_optimizer_v2: 
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: ===== Trial 23 / 23 - Full Evaluation =====
+2025/06/01 04:49:50 INFO dspy.teleprompt.mipro_optimizer_v2: Doing full eval on next top averaging program (Avg Score: 74.29) from minibatch trials...
+Average Metric: 189.00 / 300 (63.0%): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████| 300/300 [01:22<00:00,  3.66it/s]
+2025/06/01 04:51:12 INFO dspy.evaluate.evaluate: Average Metric: 189 / 300 (63.0%)
+2025/06/01 04:51:12 INFO dspy.teleprompt.mipro_optimizer_v2: Full eval scores so far: [63.67, 66.0, 68.0, 67.67, 63.0]
+2025/06/01 04:51:12 INFO dspy.teleprompt.mipro_optimizer_v2: Best full score so far: 68.0
+2025/06/01 04:51:12 INFO dspy.teleprompt.mipro_optimizer_v2: =======================
+2025/06/01 04:51:12 INFO dspy.teleprompt.mipro_optimizer_v2: 
 
-2025/06/01 00:43:16 INFO dspy.teleprompt.mipro_optimizer_v2: Returning best identified program with score 72.33!
-Number of interactions: 2255
-Total cost: $0.4659127500000005
-~/Documents/School/9_Spring_25/cs152/project/discordbot main !1 ?1                                                                                                                                                                                      13m 45s  cs152 00:43:17
-❯                
+2025/06/01 04:51:12 INFO dspy.teleprompt.mipro_optimizer_v2: Returning best identified program with score 68.0!
+Number of interactions: 2215
+Total cost: $0.4713736500000009

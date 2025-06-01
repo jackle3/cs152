@@ -5,42 +5,32 @@
     "demos": [
       {
         "augmented": true,
-        "message": "Hey everyone, I've compiled some notes on the latest chapter we covered in class. It includes detailed explanations of the algorithms and some practice problems. Feel free to check them out and let me know if you have any questions! \ud83d\udcda\ud83d\udcbb",
-        "reasoning": "The message is a positive and constructive contribution to a group discussion about class notes. It does not contain any abusive content, spam, or fraudulent information.",
-        "abuse_type": null,
+        "message": "Hey everyone! \ud83c\udfa8 Just discovered this amazing app called \"ArtMaster\" that can help you enhance your digital drawings and paintings. It's totally free and super easy to use! I've been using it for my latest projects and it has really taken my art to the next level. Check it out! And if you like it, share it with your artist friends too! \ud83d\ude0a\ud83c\udfa8 #ArtMaster #FreeArtTools",
+        "reasoning": "The message promotes an app that claims to enhance digital drawings and paintings. While it appears to be a genuine recommendation, the use of hashtags and the enthusiastic tone may indicate it is an advertisement rather than a personal recommendation. This could fall under spam as it promotes a product without clear context of personal experience.",
+        "abuse_type": "spam",
         "fraud_subtype": null,
-        "severity": "low",
-        "reason": "The message is informative and encourages collaboration among peers, which is appropriate for the context.",
-        "confidence": 0.95
+        "severity": "medium",
+        "reason": "The message promotes an app in a way that resembles advertising, which is often considered spam in community settings.",
+        "confidence": 0.75
       },
       {
-        "augmented": true,
-        "message": "@everyone We need to finalize the beat for the chorus ASAP! The studio time is booked for tomorrow, and I haven't received the latest mix from anyone. Can someone send it over? Thanks!",
-        "reasoning": "The message is a straightforward request for collaboration on a music project, asking for the latest mix to be sent over before a scheduled studio time. It does not contain any abusive content or fall into any of the specified abuse categories.",
-        "abuse_type": null,
-        "fraud_subtype": null,
-        "severity": "low",
-        "reason": "The message is a legitimate request for collaboration and does not exhibit any abusive behavior.",
-        "confidence": 0.95
+        "message": "Hey everyone, I just finished my notes on the chapter about photosynthesis. I hope they help you all ace the test! \ud83d\ude04 Also, if anyone wants to study together, I have some really fun ways to memorize the material... if you know what I mean. \ud83c\udf1e\ud83d\ude09",
+        "abuse_type": "inappropriate",
+        "fraud_subtype": null
       },
       {
-        "augmented": true,
-        "message": "Yo fam, just saw this dope new meme! \ud83e\udd23 Check it out when you got a sec. It\u2019s lit!",
-        "reasoning": "The message appears to be casual and light-hearted, sharing a meme without any harmful intent. It does not contain any inappropriate content, spam, fraud, or harassment.",
-        "abuse_type": null,
-        "fraud_subtype": null,
-        "severity": "low",
-        "reason": "The message is simply sharing a meme and does not violate any community guidelines or contain abusive content.",
-        "confidence": 0.95
+        "message": "Hey everyone! I just saw this post claiming they're giving away free gift cards every hour! Has anyone here tried it? It seems too good to be true... Here's the link: [fake_link_here]. What do you think?",
+        "abuse_type": "fraud",
+        "fraud_subtype": "fake_giveaway"
       },
       {
-        "message": "\ud83d\udea8 BREAKING NEWS \ud83d\udea8: Ethereum just hit a new all-time high! Prices have surged past $4,000. If you're holding ETH, now might be a good time to consider your next move. Stay tuned for more updates! \ud83d\udcb0 #CryptoRising",
-        "abuse_type": null,
+        "message": "\ud83d\udea8 URGENT \ud83d\udea8 Attention all users! We've detected unusual activity on your account which may lead to data loss or security breaches. Please follow these steps immediately to secure your system: [Click here for detailed instructions](http:\/\/fake-support-link.com). Our tech team is standing by to assist you. Don't wait\u2014act now!",
+        "abuse_type": "spam",
         "fraud_subtype": null
       }
     ],
     "signature": {
-      "instructions": "Evaluate the provided Discord message for potential abuse. Determine if it falls into any of the specified abuse types, including inappropriate content, spam, fraud, or harassment. Generate a structured report that includes your reasoning, the identified abuse type, any relevant fraud subtype, the severity of the abuse, additional reasoning for the report, and a confidence score.",
+      "instructions": "Analyze the content of the provided Discord message and classify it into one of the predefined abuse types, such as fraud, harassment, inappropriate content, or spam. Provide a detailed reasoning behind your classification, specify the severity of the abuse, and include your confidence level in the assessment. Ensure that your response includes all relevant outputs: reasoning, abuse type, fraud subtype (if applicable), severity, additional reasoning, and confidence.",
       "fields": [
         {
           "prefix": "Message:",
@@ -60,7 +50,7 @@
         },
         {
           "prefix": "Severity:",
-          "description": "The severity that the message performs the abuse type at"
+          "description": "The severity of the abuse type in the message"
         },
         {
           "prefix": "Reason:",

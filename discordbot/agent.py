@@ -195,7 +195,7 @@ def evaluate_agent(optimized: bool = False):
         agent_type = "base"
 
     evaluator = Evaluate(
-        devset=trainset, num_threads=10, display_progress=True, return_outputs=True, return_all_scores=True
+        devset=trainset, num_threads=16, display_progress=True, return_outputs=True, return_all_scores=True
     )
     overall_score, result_triples, individual_scores = evaluator(agent, metric=validate_abuse_type)
 
@@ -260,13 +260,14 @@ def run_example():
     dspy.inspect_history()
 
     calculate_lm_cost()
-    
-def compare_agents():
-    # print("Evaluating optimized agent...")
-    # evaluate_agent(optimized=True)
 
-    # print("-" * 50)
-    # print("\n\n\n")
+
+def compare_agents():
+    print("Evaluating optimized agent...")
+    evaluate_agent(optimized=True)
+
+    print("-" * 50)
+    print("\n\n\n")
 
     print("Evaluating base agent...")
     evaluate_agent(optimized=False)
