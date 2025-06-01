@@ -1,0 +1,32 @@
+❯ python agent.py
+Evaluating optimized agent...
+✅ Loaded optimized agent from optimized_agent.json
+Using optimized agent for evaluation...
+Average Metric: 243.00 / 337 (72.1%): 100%|█████████████████████████████████████████████████████████████████████| 337/337 [00:48<00:00,  6.97it/s]
+2025/06/01 16:02:39 INFO dspy.evaluate.evaluate: Average Metric: 243 / 337 (72.1%)
+✅ Saved confusion matrix data to data/confusion_data_optimized_2025-06-01_16-02-39.csv
+Number of interactions: 337
+Total cost: $0.06721754999999999
+--------------------------------------------------
+
+
+
+
+Evaluating base agent...
+Using base agent for evaluation...
+Average Metric: 38.00 / 54 (70.4%):  16%|███████████▌                                                            | 54/337 [00:08<00:38,  7.33it/s]2025/06/01 16:02:48 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 40.00 / 56 (71.4%):  17%|███████████▉                                                            | 56/337 [00:08<00:39,  7.04it/s]2025/06/01 16:02:48 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 43.00 / 62 (69.4%):  18%|█████████████                                                           | 61/337 [00:09<00:41,  6.65it/s]2025/06/01 16:02:48 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 52.00 / 76 (68.4%):  22%|████████████████                                                        | 75/337 [00:11<00:33,  7.81it/s]2025/06/01 16:02:51 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 56.00 / 89 (62.9%):  26%|██████████████████▊                                                     | 88/337 [00:13<00:27,  8.96it/s]2025/06/01 16:02:52 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 73.00 / 113 (64.6%):  33%|███████████████████████▎                                              | 112/337 [00:17<00:36,  6.17it/s]2025/06/01 16:02:56 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 114.00 / 183 (62.3%):  54%|█████████████████████████████████████▍                               | 183/337 [00:27<00:15,  9.83it/s]2025/06/01 16:03:06 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 151.00 / 247 (61.1%):  73%|██████████████████████████████████████████████████▌                  | 247/337 [00:35<00:09,  9.55it/s]2025/06/01 16:03:15 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 159.00 / 255 (62.4%):  76%|████████████████████████████████████████████████████▏                | 255/337 [00:36<00:11,  7.23it/s]2025/06/01 16:03:16 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 169.00 / 273 (61.9%):  81%|███████████████████████████████████████████████████████▋             | 272/337 [00:38<00:06, 10.36it/s]2025/06/01 16:03:18 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 195.00 / 319 (61.1%):  94%|█████████████████████████████████████████████████████████████████    | 318/337 [00:44<00:01, 10.87it/s]2025/06/01 16:03:24 WARNING dspy.adapters.json_adapter: Failed to use structured output format, falling back to JSON mode.
+Average Metric: 208.00 / 337 (61.7%): 100%|█████████████████████████████████████████████████████████████████████| 337/337 [00:47<00:00,  7.06it/s]
+2025/06/01 16:03:27 INFO dspy.evaluate.evaluate: Average Metric: 208 / 337 (61.7%)
+✅ Saved confusion matrix data to data/confusion_data_base_2025-06-01_16-03-27.csv
+Number of interactions: 685
+Total cost: $0.12414029999999988

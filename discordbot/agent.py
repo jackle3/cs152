@@ -11,19 +11,17 @@ from datetime import datetime
 # Global variable to store confusion matrix data
 confusion_matrix_data = []
 
+# Set up the language model
+token_path = "tokens.json"
+if not os.path.isfile(token_path):
+    raise Exception(f"{token_path} not found!")
+with open(token_path) as f:
+    # If you get an error here, it means your token is formatted incorrectly. Did you put it in quotes?
+    tokens = json.load(f)
+    openai_token = tokens["openai"]
 
-def configure_dspy():
-    # Set up the language model
-    token_path = "tokens.json"
-    if not os.path.isfile(token_path):
-        raise Exception(f"{token_path} not found!")
-    with open(token_path) as f:
-        # If you get an error here, it means your token is formatted incorrectly. Did you put it in quotes?
-        tokens = json.load(f)
-        openai_token = tokens["openai"]
-
-    lm = dspy.LM("openai/gpt-4o-mini", api_key=openai_token)
-    dspy.configure(lm=lm)
+lm = dspy.LM("openai/gpt-4o-mini", api_key=openai_token)
+dspy.configure(lm=lm)
 
 
 # ['fraud', 'spam', 'harassment', 'inappropriate']
@@ -112,8 +110,18 @@ def validate_abuse_type(example, prediction, trace=None):
 
 
 def get_trainset():
-    df = pd.read_csv("data/discord_moderation_train_dataset.csv")
-    trainset = []
+    path = "data/discord_moderation_train_dataset.csv"
+    return get_dataset(path)
+
+
+def get_devset():
+    path = "data/discord_moderation_test_dataset.csv"
+    return get_dataset(path)
+
+
+def get_dataset(filepath: str):
+    df = pd.read_csv(filepath)
+    dataset = []
     for _, row in df.iterrows():
         message = row["message"]
         abuse_type = row["abuse_type"]
@@ -136,8 +144,8 @@ def get_trainset():
             message=message, abuse_type=abuse_type, fraud_subtype=fraud_subtype
         ).with_inputs("message")
 
-        trainset.append(example)
-    return trainset
+        dataset.append(example)
+    return dataset
 
 
 def calculate_lm_cost():
@@ -165,7 +173,6 @@ def optimize_agent():
 
 def load_optimized_agent():
     """Load the optimized agent from the saved JSON file."""
-    configure_dspy()
     try:
         optimized_program = Agent()
         optimized_program.load("optimized_agent.json")
@@ -183,7 +190,7 @@ def evaluate_agent(optimized: bool = False):
     global confusion_matrix_data
     confusion_matrix_data = []  # Clear any previous data
 
-    trainset = get_trainset()
+    devset = get_devset()
 
     # Try to load optimized agent first, fallback to base agent
     if optimized:
@@ -197,7 +204,7 @@ def evaluate_agent(optimized: bool = False):
         agent_type = "base"
 
     evaluator = Evaluate(
-        devset=trainset, num_threads=16, display_progress=True, return_outputs=True, return_all_scores=True
+        devset=devset, num_threads=16, display_progress=True, return_outputs=True, return_all_scores=True
     )
     overall_score, result_triples, individual_scores = evaluator(agent, metric=validate_abuse_type)
 
@@ -277,9 +284,8 @@ def compare_agents():
 
 if __name__ == "__main__":
     # optimize_agent()          # Run optimization (takes time + money)
-    configure_dspy()
 
-    # compare_agents()
+    compare_agents()
 
     # run_example()             # Test base agent on examples
     # run_example_optimized()   # Test optimized agent on examples
