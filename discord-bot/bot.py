@@ -11,7 +11,8 @@ from report import Report
 # Set up logging to the console
 logger = logging.getLogger("discord")
 logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+os.makedirs("logs", exist_ok=True)
+handler = logging.FileHandler(filename="logs/discord.log", encoding="utf-8", mode="w")
 handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
 logger.addHandler(handler)
 
@@ -85,7 +86,8 @@ class ModBot(commands.Bot):
         report = Report(self, interaction, message)
         self.active_reports[report.id] = (interaction.user.id, report)
         await report.show_report_view()
-        
+
+
 ########################################################
 # Initialization
 ########################################################
@@ -100,6 +102,7 @@ with open(token_path) as f:
     discord_token = tokens["discord"]
 
 bot = ModBot()
+
 
 ########################################################
 # Commands
@@ -153,21 +156,18 @@ async def list_reports(ctx):
         embed.add_field(
             name=f"Report #{report.id}",
             value=f"**Type:** {type_text}\n"
-                  f"**Reporter:** <@{ctx.bot.active_reports[report.id][0]}>\n"
-                  f"**Target:** {report.reported_message.author.mention}\n"
-                  f"**Message:** [Jump to Moderator Action]({report.mod_message.jump_url})",
+            f"**Reporter:** <@{ctx.bot.active_reports[report.id][0]}>\n"
+            f"**Target:** {report.reported_message.author.mention}\n"
+            f"**Message:** [Jump to Moderator Action]({report.mod_message.jump_url})",
             inline=False,
         )
-        
-        # Add spacer 
-        embed.add_field(name="\u200b", value="\u200b", inline=False)
 
     if len(guild_reports) > 10:
         embed.set_footer(text=f"Showing first 10 of {len(guild_reports)} reports")
 
     await ctx.send(embed=embed)
-    
-    
+
+
 ########################################################
 # Run the bot
 ########################################################

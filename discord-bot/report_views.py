@@ -20,13 +20,13 @@ class MainReportView(View):
             button_style = ButtonStyle.primary
             if key == "other":
                 button_style = ButtonStyle.secondary
-                
+
             button = Button(
                 label=f"{abuse_type.emoji} {abuse_type.label}",
                 style=button_style,
                 row=(i // 3),  # three buttons per row for better layout
                 custom_id=f"abuse_type_{key}",
-                disabled=False
+                disabled=False,
             )
 
             # Set the callback
@@ -48,7 +48,7 @@ class MainReportView(View):
             # Track selection
             abuse_type = ABUSE_TYPES[abuse_type_key]
             self.selected_type = abuse_type_key
-            
+
             # Set the report data
             self.report.abuse_category = abuse_type_key
             self.report.report_type = abuse_type.label
@@ -73,7 +73,7 @@ class MainReportView(View):
             if isinstance(item, Button):
                 abuse_key = item.custom_id.replace("abuse_type_", "")
                 abuse_type = ABUSE_TYPES.get(abuse_key)
-                
+
                 if item.custom_id == f"abuse_type_{selected_key}":
                     # Highlight selected button with checkmark
                     item.style = ButtonStyle.success
@@ -85,7 +85,7 @@ class MainReportView(View):
                         item.style = ButtonStyle.secondary
                     else:
                         item.style = ButtonStyle.primary
-                    
+
                     # Remove checkmark if it exists
                     base_label = f"{abuse_type.emoji} {abuse_type.label}"
                     item.label = base_label
@@ -97,7 +97,7 @@ class MainReportView(View):
         embed = create_progress_embed(
             title=f"Select Specific {abuse_type.label} Type",
             description=f"What specific type of {abuse_type.label.lower()} is this?",
-            color=abuse_type.color
+            color=abuse_type.color,
         )
 
         # Include a summary of the report so far
@@ -114,7 +114,7 @@ class MainReportView(View):
             placeholder=f"Choose specific {abuse_type.label.lower()} type...",
             options=abuse_type.subtypes,
             on_select=self.subtype_selected,
-            parent_type=abuse_type_key
+            parent_type=abuse_type_key,
         )
 
         # Send subtype selection message and track it
@@ -134,17 +134,17 @@ class MainReportView(View):
         embed = create_progress_embed(
             title="Additional Information (Optional)",
             description="Would you like to provide any additional details that might help our moderators?",
-            color=discord.Color.blue()
+            color=discord.Color.blue(),
         )
-        
+
         embed.add_field(
             name="💡 Helpful Information",
             value="• Links to external content\n• Additional context\n• Previous related incidents\n• Any other relevant details",
-            inline=False
+            inline=False,
         )
 
         view = AdditionalInfoView(self.report)
-        
+
         # Send additional info message and track it
         additional_info_message = await interaction.followup.send(embed=embed, view=view)
         self.report.add_bot_message(additional_info_message)
@@ -159,19 +159,11 @@ class AdditionalInfoView(View):
         self.selected_action = None
 
         # Add buttons with better styling
-        add_info_button = Button(
-            label="📝 Add Information", 
-            style=ButtonStyle.primary, 
-            custom_id="add_info"
-        )
+        add_info_button = Button(label="📝 Add Information", style=ButtonStyle.primary, custom_id="add_info")
         add_info_button.callback = self._add_info_callback
         self.add_item(add_info_button)
 
-        skip_button = Button(
-            label="⏭️ Submit Report", 
-            style=ButtonStyle.primary, 
-            custom_id="skip_info"
-        )
+        skip_button = Button(label="⏭️ Submit Report", style=ButtonStyle.primary, custom_id="skip_info")
         skip_button.callback = self._skip_callback
         self.add_item(skip_button)
 
@@ -180,28 +172,28 @@ class AdditionalInfoView(View):
         # If changing selection, clean up any messages after additional info step
         if self.selected_action and self.selected_action != "add_info":
             await self.report.cleanup_messages_from_step(2)  # Clean up messages after additional info
-            
+
         self.selected_action = "add_info"
-        
+
         modal = AdditionalInfoModal(self.report)
         await interaction.response.send_modal(modal)
-        
+
         # Update buttons to show selection
         await self._update_buttons_after_selection(interaction, "add_info")
 
     async def _skip_callback(self, interaction):
         """Handle skip button click"""
         await interaction.response.defer()
-        
-        # If changing selection, clean up any messages after additional info step  
+
+        # If changing selection, clean up any messages after additional info step
         if self.selected_action and self.selected_action != "skip_info":
             await self.report.cleanup_messages_from_step(2)  # Clean up messages after additional info
-        
+
         self.selected_action = "skip_info"
-        
+
         # Update buttons to show selection
         await self._update_buttons_after_selection(interaction, "skip_info")
-        
+
         # Submit without additional info
         await self.report.submit_report_to_mods()
 
@@ -219,7 +211,7 @@ class AdditionalInfoView(View):
                         item.label = "📝 Add Information"
                     else:
                         item.label = "⏭️ Submit Report"
-        
+
         self.selected_action = selected_action
         await interaction.edit_original_response(view=self)
 
@@ -236,7 +228,7 @@ class AdditionalInfoModal(Modal):
             placeholder="Provide any additional context that might help moderators understand the situation...",
             style=discord.TextStyle.paragraph,
             required=True,
-            max_length=1000
+            max_length=1000,
         )
         self.add_item(self.info)
 
@@ -266,33 +258,24 @@ class SelectView(View):
             # Include emoji in select options
             label = f"{value.emoji} {value.label}"
             select_options.append(
-                SelectOption(
-                    label=label, 
-                    value=key, 
-                    description=value.description[:100]  # Discord limit
-                )
+                SelectOption(label=label, value=key, description=value.description[:100])  # Discord limit
             )
 
-        select = Select(
-            placeholder=placeholder, 
-            options=select_options, 
-            row=0,
-            custom_id="subtype_select"
-        )
+        select = Select(placeholder=placeholder, options=select_options, row=0, custom_id="subtype_select")
         select.callback = self.select_callback
         self.add_item(select)
 
     async def select_callback(self, interaction):
         await interaction.response.defer()
-        
+
         value = interaction.data["values"][0]
-        
+
         # If user is changing subtype selection, clean up messages after subtype step
         if self.selected_value and self.selected_value != value:
             await self.report.cleanup_messages_from_step(1)  # Clean up messages after subtype selection
-            
+
         self.selected_value = value
-        
+
         # Update the select to show selection was made
         for item in self.children:
             if isinstance(item, Select):

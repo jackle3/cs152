@@ -28,7 +28,7 @@ class CleanupBot(commands.Bot):
         for guild in self.guilds:
             # Find all channels that start with 'group-'
             for channel in guild.text_channels:
-                if channel.name.startswith('group-'):
+                if channel.name.startswith('group-18'):
                     try:
                         # Get all messages in the channel
                         async for message in channel.history(limit=None):

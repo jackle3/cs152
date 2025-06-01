@@ -12,17 +12,19 @@ from typing import Dict, Optional
 @dataclass
 class AbuseType:
     """Represents an abuse type with its metadata."""
+
     label: str
     description: str
     emoji: str
     color: discord.Color = discord.Color.blue()
-    subtypes: Optional[Dict[str, 'AbuseType']] = None
+    subtypes: Optional[Dict[str, "AbuseType"]] = None
 
 
 class FraudType(Enum):
     """Specific types of fraud common in Discord channels."""
+
     PHISHING = "phishing"
-    CRYPTO_SCAM = "crypto_scam" 
+    CRYPTO_SCAM = "crypto_scam"
     FAKE_GIVEAWAY = "fake_giveaway"
     ACCOUNT_THEFT = "account_theft"
     IMPERSONATION = "impersonation"
@@ -31,6 +33,7 @@ class FraudType(Enum):
 
 class ModerationSeverity(Enum):
     """Severity levels for moderation actions."""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -43,37 +46,37 @@ FRAUD_SUBTYPES = {
         label="Phishing",
         description="Attempts to steal login credentials or personal information",
         emoji="🎣",
-        color=discord.Color.red()
+        color=discord.Color.red(),
     ),
     FraudType.CRYPTO_SCAM.value: AbuseType(
         label="Crypto Scam",
         description="Fake cryptocurrency investment schemes or wallet draining",
         emoji="💰",
-        color=discord.Color.orange()
+        color=discord.Color.orange(),
     ),
     FraudType.FAKE_GIVEAWAY.value: AbuseType(
         label="Fake Giveaway",
         description="Fraudulent giveaways or contests to steal information",
         emoji="🎁",
-        color=discord.Color.gold()
+        color=discord.Color.gold(),
     ),
     FraudType.ACCOUNT_THEFT.value: AbuseType(
         label="Account Theft",
         description="Compromised accounts posting malicious content",
         emoji="🔓",
-        color=discord.Color.dark_red()
+        color=discord.Color.dark_red(),
     ),
     FraudType.IMPERSONATION.value: AbuseType(
         label="Impersonation",
         description="Pretending to be someone else (admin, celebrity, etc.)",
         emoji="🎭",
-        color=discord.Color.purple()
+        color=discord.Color.purple(),
     ),
     FraudType.FAKE_LINKS.value: AbuseType(
         label="Malicious Links",
         description="Links to fake websites, malware, or scam pages",
         emoji="🔗",
-        color=discord.Color.dark_orange()
+        color=discord.Color.dark_orange(),
     ),
 }
 
@@ -84,31 +87,31 @@ ABUSE_TYPES = {
         description="Deceptive content attempting to steal money, information, or accounts",
         emoji="⚠️",
         color=discord.Color.red(),
-        subtypes=FRAUD_SUBTYPES
+        subtypes=FRAUD_SUBTYPES,
     ),
     "spam": AbuseType(
         label="Spam",
         description="Unwanted promotional or repetitive content",
         emoji="📢",
-        color=discord.Color.orange()
+        color=discord.Color.orange(),
     ),
     "harassment": AbuseType(
         label="Harassment",
         description="Bullying, threats, or targeted abuse",
         emoji="🚫",
-        color=discord.Color.dark_red()
+        color=discord.Color.dark_red(),
     ),
     "inappropriate": AbuseType(
         label="Inappropriate Content",
         description="NSFW, hate speech, or other inappropriate content",
         emoji="🔞",
-        color=discord.Color.purple()
+        color=discord.Color.purple(),
     ),
     "other": AbuseType(
         label="Other",
         description="Other reportable content not covered above",
         emoji="❓",
-        color=discord.Color.greyple()
+        color=discord.Color.greyple(),
     ),
 }
 
@@ -189,4 +192,4 @@ MODERATION_SUMMARY_TEMPLATE = """
 
 Report ID: {report_id}
 Moderator: {moderator}
-""" 
+"""
