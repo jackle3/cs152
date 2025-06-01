@@ -23,7 +23,7 @@ class Report:
 
         # Threads
         self.report_thread = None
-        self.mod_thread = None
+        self.mod_message = None
 
         # Whether the report is still active and can be acted upon
         self.active = True
@@ -166,7 +166,7 @@ class Report:
         mod_report_message = await mod_channel.send(embed=embed, view=view)
 
         # Store the mod channel message for reference
-        self.mod_report_message = mod_report_message
+        self.mod_message = mod_report_message
 
         # Send confirmation to the report thread
         await self.send_confirmation()
