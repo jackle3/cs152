@@ -18,7 +18,6 @@ with open(token_path) as f:
     qwen_token = tokens["qwen"]
 
 # Temperature controls randomness: 0.0 = deterministic, 1.0 = maximum creativity/diversity
-
 model = "openai/qwen2.5-72b-instruct"
 api_base = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
 api_key = qwen_token
@@ -208,19 +207,34 @@ class DatasetGenerator(dspy.Module):
 
         # Define generation targets
         self.generation_targets = {
-            "benign": 200,  # Clean messages
-            "fraud": {
-                "phishing": 30,
-                "crypto_scam": 30,
-                "fake_giveaway": 30,
-                "account_theft": 20,
-                "impersonation": 20,
-                "fake_links": 30,
+            "benign": 450,
+            "fraud": {  # fraud total is 450 examples
+                "phishing": 75,
+                "crypto_scam": 75,
+                "fake_giveaway": 75,
+                "account_theft": 75,
+                "impersonation": 75,
+                "fake_links": 75,
             },
-            "spam": 50,
-            "harassment": 40,
-            "inappropriate": 40,
+            "spam": 450,
+            "harassment": 450,
+            "inappropriate": 450,
         }
+
+        # self.generation_targets = {
+        #     "benign": 1,
+        #     "fraud": {  # fraud total is 450 examples
+        #         "phishing": 1,
+        #         "crypto_scam": 1,
+        #         "fake_giveaway": 1,
+        #         "account_theft": 1,
+        #         "impersonation": 1,
+        #         "fake_links": 1,
+        #     },
+        #     "spam": 1,
+        #     "harassment": 1,
+        #     "inappropriate": 1,
+        # }
 
     def generate_benign_messages(self, count: int) -> List[DatasetExample]:
         """Generate benign/clean messages."""
@@ -238,7 +252,7 @@ class DatasetGenerator(dspy.Module):
 
             example = DatasetExample(message=result.message, abuse_type=None, fraud_subtype=None)
             examples.append(example)
-            write_to_file(example)
+            # write_to_file(example)
 
             print(f"Generated benign message {i+1}/{count}")
 
@@ -261,7 +275,7 @@ class DatasetGenerator(dspy.Module):
 
                 example = DatasetExample(message=result.message, abuse_type="fraud", fraud_subtype=subtype)
                 examples.append(example)
-                write_to_file(example)
+                # write_to_file(example)
 
                 print(f"Generated {subtype} message {i+1}/{count}")
 
@@ -283,7 +297,7 @@ class DatasetGenerator(dspy.Module):
 
             example = DatasetExample(message=result.message, abuse_type=category, fraud_subtype=None)
             examples.append(example)
-            write_to_file(example)
+            # write_to_file(example)
 
             print(f"Generated {category} message {i+1}/{count}")
 
@@ -377,6 +391,18 @@ class DatasetGenerator(dspy.Module):
         for fraud_subtype, count in stats["fraud_subtypes"].items():
             print(f"  {fraud_subtype}: {count}")
 
+    def calculate_generation_cost(self):
+        """Calculate and display the total cost of dataset generation."""
+        history = lm.history
+        total_cost = 0
+        for entry in history:
+            if entry["cost"] is not None and isinstance(entry["cost"], (int, float)):
+                total_cost += entry["cost"]
+        print(f"\n💰 Dataset Generation Cost:")
+        print(f"Number of LM interactions: {len(history)}")
+        print(f"Total cost: ${total_cost:.4f}")
+        return total_cost
+
 
 def main():
     """Main function to generate and save the dataset."""
@@ -399,6 +425,9 @@ def main():
 
     # Save test set
     generator.save_dataset(test_examples, "discord_moderation_test_dataset.csv")
+
+    # Calculate and display generation cost
+    generator.calculate_generation_cost()
 
     print("\n🎉 Dataset generation completed successfully!")
     print("Files created:")

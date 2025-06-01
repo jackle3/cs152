@@ -1,0 +1,84 @@
+{
+  "response.predict": {
+    "traces": [],
+    "train": [],
+    "demos": [
+      {
+        "augmented": true,
+        "message": "Hey everyone, I've compiled some notes on the latest chapter we covered in class. It includes detailed explanations of the algorithms and some practice problems. Feel free to check them out and let me know if you have any questions! \ud83d\udcda\ud83d\udcbb",
+        "reasoning": "The message is a positive and constructive contribution to a group discussion about class notes. It does not contain any abusive content, spam, or fraudulent information.",
+        "abuse_type": null,
+        "fraud_subtype": null,
+        "severity": "low",
+        "reason": "The message is informative and encourages collaboration among peers, which is appropriate for the context.",
+        "confidence": 0.95
+      },
+      {
+        "augmented": true,
+        "message": "@everyone We need to finalize the beat for the chorus ASAP! The studio time is booked for tomorrow, and I haven't received the latest mix from anyone. Can someone send it over? Thanks!",
+        "reasoning": "The message is a straightforward request for collaboration on a music project, asking for the latest mix to be sent over before a scheduled studio time. It does not contain any abusive content or fall into any of the specified abuse categories.",
+        "abuse_type": null,
+        "fraud_subtype": null,
+        "severity": "low",
+        "reason": "The message is a legitimate request for collaboration and does not exhibit any abusive behavior.",
+        "confidence": 0.95
+      },
+      {
+        "augmented": true,
+        "message": "Yo fam, just saw this dope new meme! \ud83e\udd23 Check it out when you got a sec. It\u2019s lit!",
+        "reasoning": "The message appears to be casual and light-hearted, sharing a meme without any harmful intent. It does not contain any inappropriate content, spam, fraud, or harassment.",
+        "abuse_type": null,
+        "fraud_subtype": null,
+        "severity": "low",
+        "reason": "The message is simply sharing a meme and does not violate any community guidelines or contain abusive content.",
+        "confidence": 0.95
+      },
+      {
+        "message": "\ud83d\udea8 BREAKING NEWS \ud83d\udea8: Ethereum just hit a new all-time high! Prices have surged past $4,000. If you're holding ETH, now might be a good time to consider your next move. Stay tuned for more updates! \ud83d\udcb0 #CryptoRising",
+        "abuse_type": null,
+        "fraud_subtype": null
+      }
+    ],
+    "signature": {
+      "instructions": "Evaluate the provided Discord message for potential abuse. Determine if it falls into any of the specified abuse types, including inappropriate content, spam, fraud, or harassment. Generate a structured report that includes your reasoning, the identified abuse type, any relevant fraud subtype, the severity of the abuse, additional reasoning for the report, and a confidence score.",
+      "fields": [
+        {
+          "prefix": "Message:",
+          "description": "The message to moderate"
+        },
+        {
+          "prefix": "Reasoning: Let's think step by step in order to",
+          "description": "${reasoning}"
+        },
+        {
+          "prefix": "Abuse Type:",
+          "description": "The abuse type of the message"
+        },
+        {
+          "prefix": "Fraud Subtype:",
+          "description": "The fraud subtype of the message, if the abuse type is fraud"
+        },
+        {
+          "prefix": "Severity:",
+          "description": "The severity that the message performs the abuse type at"
+        },
+        {
+          "prefix": "Reason:",
+          "description": "Additional information and your reasoning for the report"
+        },
+        {
+          "prefix": "Confidence:",
+          "description": "The confidence in the report"
+        }
+      ]
+    },
+    "lm": null
+  },
+  "metadata": {
+    "dependency_versions": {
+      "python": "3.11",
+      "dspy": "2.6.24",
+      "cloudpickle": "3.1"
+    }
+  }
+}
