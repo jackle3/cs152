@@ -7,19 +7,55 @@ from report_views import MainReportView
 
 
 class Report:
-    def __init__(self, client, interaction, message):
+    def __init__(self, client, interaction, message, automatic=False, agent_data=None):
         self.client = client
         self.id = shortuuid.uuid()[:8]
 
         # Core report data
         self.reported_message = message
         self.interaction = interaction
+        self.is_automatic = automatic
 
-        # Report details
-        self.report_type = None
-        self.abuse_category = None
-        self.subtypes = []  # List to store the chain of subtypes
-        self.additional_info = None
+        # Agent data for automatic reports
+        if automatic and agent_data:
+            self.agent_abuse_type = agent_data.get("abuse_type")
+            self.agent_fraud_subtype = agent_data.get("fraud_subtype")
+            self.agent_severity = agent_data.get("severity")
+            self.agent_confidence = agent_data.get("confidence")
+            if self.agent_confidence:
+                self.agent_confidence = int(self.agent_confidence * 100)
+            self.agent_reasoning = agent_data.get("reasoning")
+
+            valid_categories = list(set(ABUSE_TYPES.keys()) - {"other"})
+            if self.agent_abuse_type and self.agent_abuse_type.lower() in valid_categories:
+                self.abuse_category = self.agent_abuse_type.lower()
+            else:
+                print(f"Agent returned unexpected abuse type: '{self.agent_abuse_type}'. Using 'other'.")
+                self.abuse_category = "other"
+
+            valid_subtypes = list(ABUSE_TYPES["fraud"].subtypes.keys())
+            if self.agent_fraud_subtype and self.agent_fraud_subtype.lower() in valid_subtypes:
+                self.subtypes = [self.agent_fraud_subtype.lower()]
+            else:
+                if self.agent_fraud_subtype:
+                    print(
+                        f"Agent returned unexpected fraud subtype: '{self.agent_fraud_subtype}'. Using empty list."
+                    )
+                self.subtypes = []
+
+            self.additional_info = f"Agent Reasoning: {self.agent_reasoning}"
+        else:
+            # Initialize as None for manual reports (will be filled by user)
+            self.agent_abuse_type = None
+            self.agent_fraud_subtype = None
+            self.agent_severity = None
+            self.agent_confidence = None
+            self.agent_reasoning = None
+
+            # Report details
+            self.abuse_category = None
+            self.subtypes = []
+            self.additional_info = None
 
         # Threads
         self.report_thread = None
@@ -136,14 +172,77 @@ class Report:
         mod_channel = self.client.mod_channels.get(guild_id)
         if not mod_channel:
             # Handle the case where mod channel is not found more gracefully
-            error_embed = discord.Embed(
-                title="❌ Configuration Error",
-                description="Moderator channel not configured for this server. Please contact an administrator.",
-                color=discord.Color.red(),
-            )
-            await self.report_thread.send(embed=error_embed)
-            return
+            if self.is_automatic:
+                # For automatic reports, log the error
+                print(f"No mod channel configured for guild {guild_id}")
+                return
+            else:
+                # For manual reports, show error in thread
+                error_embed = discord.Embed(
+                    title="❌ Configuration Error",
+                    description="Moderator channel not configured for this server. Please contact an administrator.",
+                    color=discord.Color.red(),
+                )
+                await self.report_thread.send(embed=error_embed)
+                return
 
+        # Create appropriate embed based on report type
+        if self.is_automatic:
+            embed = self._create_automatic_report_embed()
+        else:
+            embed = self._create_manual_report_embed()
+
+        # Send report directly to mod channel (no thread yet)
+        view = ModeratorView(self)
+        mod_message = await mod_channel.send(embed=embed, view=view)
+
+        # Store the mod channel message for reference
+        self.mod_message = mod_message
+
+        # Send confirmation to the report thread (only for manual reports)
+        if not self.is_automatic:
+            await self.send_confirmation()
+
+    def _create_automatic_report_embed(self):
+        """Create embed for automatic reports"""
+        embed = discord.Embed(
+            title="🤖 Automatic Report (AI Detected)",
+            description=f"Our AI agent detected potential abuse with {self.agent_confidence}% confidence.",
+            color=discord.Color.gold(),
+        )
+
+        # Add AI detection details
+        embed.add_field(
+            name="🧠 AI Analysis",
+            value=f"**Detected Type:** {self.agent_abuse_type}\n"
+            f"**Subtype:** {self.agent_fraud_subtype or 'N/A'}\n"
+            f"**Severity:** {self.agent_severity}\n"
+            f"**Confidence:** {self.agent_confidence}%",
+            inline=False,
+        )
+
+        # Add reasoning
+        if self.agent_reasoning:
+            embed.add_field(
+                name="💭 AI Reasoning",
+                value=self.agent_reasoning,
+                inline=False,
+            )
+
+        # Add message details
+        embed.add_field(name="📝 Reported Message", value=quote_message(self.reported_message), inline=False)
+        embed.add_field(name="👤 Message Author", value=self.reported_message.author.mention, inline=True)
+        embed.add_field(
+            name="📍 Location", value=f"[Jump to message]({self.reported_message.jump_url})", inline=True
+        )
+
+        embed.set_footer(text=f"Automatic Report ID: {self.id}")
+        embed.timestamp = self.reported_message.created_at
+
+        return embed
+
+    def _create_manual_report_embed(self):
+        """Create embed for manual reports"""
         # Create an embed for moderators with priority indication
         priority_color = discord.Color.red() if self.abuse_category == "fraud" else discord.Color.orange()
         embed = discord.Embed(
@@ -161,16 +260,11 @@ class Report:
             )
 
         add_report_details_to_embed(embed, self)
+        return embed
 
-        # Send report directly to mod channel (no thread yet)
-        view = ModeratorView(self)
-        mod_message = await mod_channel.send(embed=embed, view=view)
-
-        # Store the mod channel message for reference
-        self.mod_message = mod_message
-
-        # Send confirmation to the report thread
-        await self.send_confirmation()
+    async def submit_automatic_report(self):
+        """Submit an automatic report directly to moderators without user interaction"""
+        await self.submit_report_to_mods()
 
     async def send_confirmation(self):
         """Show confirmation message after report submission"""

@@ -11,17 +11,20 @@ from datetime import datetime
 # Global variable to store confusion matrix data
 confusion_matrix_data = []
 
-# Set up the language model
-token_path = "tokens.json"
-if not os.path.isfile(token_path):
-    raise Exception(f"{token_path} not found!")
-with open(token_path) as f:
-    # If you get an error here, it means your token is formatted incorrectly. Did you put it in quotes?
-    tokens = json.load(f)
-    openai_token = tokens["openai"]
 
-lm = dspy.LM("openai/gpt-4o-mini", api_key=openai_token)
-dspy.configure(lm=lm)
+def configure_dspy():
+    # Set up the language model
+    token_path = "tokens.json"
+    if not os.path.isfile(token_path):
+        raise Exception(f"{token_path} not found!")
+    with open(token_path) as f:
+        # If you get an error here, it means your token is formatted incorrectly. Did you put it in quotes?
+        tokens = json.load(f)
+        openai_token = tokens["openai"]
+
+    lm = dspy.LM("openai/gpt-4o-mini", api_key=openai_token)
+    dspy.configure(lm=lm)
+
 
 # ['fraud', 'spam', 'harassment', 'inappropriate']
 abuse_types = list(set(ABUSE_TYPES.keys()) - {"other"})
@@ -51,7 +54,7 @@ class AgentReport(dspy.Signature):
     severity: Literal[*severity_levels] = dspy.OutputField(
         description="The severity of the abuse type in the message"
     )
-    reason: str = dspy.OutputField(description="Additional information and your reasoning for the report")
+    # reason: str = dspy.OutputField(description="Additional information and your reasoning for the report")
     confidence: float = dspy.OutputField(description="The confidence in the report")
 
 
@@ -164,6 +167,7 @@ def optimize_agent():
 
 def load_optimized_agent():
     """Load the optimized agent from the saved JSON file."""
+    configure_dspy()
     try:
         optimized_program = Agent()
         optimized_program.load("optimized_agent.json")
@@ -275,8 +279,9 @@ def compare_agents():
 
 if __name__ == "__main__":
     # optimize_agent()          # Run optimization (takes time + money)
+    configure_dspy()
 
-    compare_agents()
+    # compare_agents()
 
     # run_example()             # Test base agent on examples
     # run_example_optimized()   # Test optimized agent on examples

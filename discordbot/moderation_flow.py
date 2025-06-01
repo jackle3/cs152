@@ -184,17 +184,17 @@ class MessageActionView(View):
         return callback
 
     async def _cleanup_subsequent_messages(self):
-        """Clean up messages after this step"""
-        if hasattr(self.report, "mod_messages") and len(self.report.mod_messages) > 1:
+        """Clean up messages after this step (step 1 - message action)"""
+        if hasattr(self.report, "mod_messages") and len(self.report.mod_messages) > 2:
             try:
-                messages_to_delete = self.report.mod_messages[1:]
+                messages_to_delete = self.report.mod_messages[2:]
                 for msg in messages_to_delete:
                     if msg:
                         try:
                             await msg.delete()
                         except (discord.NotFound, discord.Forbidden):
                             pass
-                self.report.mod_messages = self.report.mod_messages[:1]
+                self.report.mod_messages = self.report.mod_messages[:2]
             except (IndexError, AttributeError):
                 pass
 
@@ -244,11 +244,7 @@ class UserActionView(View):
         async def callback(interaction):
             await interaction.response.defer()
 
-            # If moderator is changing their selection, trigger cleanup
-            if self.selected_action and self.selected_action != action_id:
-                await self._cleanup_subsequent_messages()
-
-            # Update selection tracking
+            # Update selection tracking (no cleanup needed as this is the final step)
             self.selected_action = action_id
             self.report.user_action = action_id
 
@@ -258,21 +254,6 @@ class UserActionView(View):
             await self.on_complete(action_id)
 
         return callback
-
-    async def _cleanup_subsequent_messages(self):
-        """Clean up messages after this step"""
-        if hasattr(self.report, "mod_messages") and len(self.report.mod_messages) > 2:
-            try:
-                messages_to_delete = self.report.mod_messages[2:]
-                for msg in messages_to_delete:
-                    if msg:
-                        try:
-                            await msg.delete()
-                        except (discord.NotFound, discord.Forbidden):
-                            pass
-                self.report.mod_messages = self.report.mod_messages[:2]
-            except (IndexError, AttributeError):
-                pass
 
     async def _update_buttons_after_selection(self, interaction, selected_action):
         """Update buttons to show selection while keeping them clickable"""
@@ -323,8 +304,11 @@ class SeverityLevelView(View):
         async def callback(interaction):
             await interaction.response.defer()
 
-            # If moderator is changing their selection, no subsequent messages to clean up at this final step
-            # but we still track the selection change for consistency
+            # If moderator is changing their selection, trigger cleanup
+            if self.selected_level and self.selected_level != level_id:
+                await self._cleanup_subsequent_messages()
+
+            # Update selection tracking
             self.selected_level = level_id
             self.report.severity_level = level_id
 
@@ -334,6 +318,21 @@ class SeverityLevelView(View):
             await self.on_complete(level_id)
 
         return callback
+
+    async def _cleanup_subsequent_messages(self):
+        """Clean up messages after this step (step 0 - severity level)"""
+        if hasattr(self.report, "mod_messages") and len(self.report.mod_messages) > 1:
+            try:
+                messages_to_delete = self.report.mod_messages[1:]
+                for msg in messages_to_delete:
+                    if msg:
+                        try:
+                            await msg.delete()
+                        except (discord.NotFound, discord.Forbidden):
+                            pass
+                self.report.mod_messages = self.report.mod_messages[:1]
+            except (IndexError, AttributeError):
+                pass
 
     async def _update_buttons_after_selection(self, interaction, selected_level):
         """Update buttons to show selection while keeping them clickable"""
@@ -377,9 +376,23 @@ async def start_moderation_flow(report, interaction):
         except (IndexError, AttributeError):
             pass
 
-    async def on_message_action_complete(action):
+    async def on_severity_complete(level):
         # Clean up any subsequent messages if moderator changed their mind
         await cleanup_mod_messages_from_step(0)
+
+        # Show message action view
+        embed = discord.Embed(
+            title="📝 Message Action",
+            description="What should be done with the reported message?",
+            color=discord.Color.blue(),
+        )
+        view = MessageActionView(report, on_message_action_complete)
+        message_action_message = await report.mod_thread.send(embed=embed, view=view)
+        report.mod_messages.append(message_action_message)
+
+    async def on_message_action_complete(action):
+        # Clean up any subsequent messages if moderator changed their mind
+        await cleanup_mod_messages_from_step(1)
 
         # Show user action view
         embed = discord.Embed(
@@ -392,43 +405,29 @@ async def start_moderation_flow(report, interaction):
         report.mod_messages.append(user_action_message)
 
     async def on_user_action_complete(action):
-        # Clean up any subsequent messages if moderator changed their mind
-        await cleanup_mod_messages_from_step(1)
-
-        # Show severity level view
-        embed = discord.Embed(
-            title="📊 Severity Level",
-            description="How severe is this violation?",
-            color=discord.Color.blue(),
-        )
-        view = SeverityLevelView(report, on_severity_complete)
-        severity_message = await report.mod_thread.send(embed=embed, view=view)
-        report.mod_messages.append(severity_message)
-
-    async def on_severity_complete(level):
         # Generate and send summary
         await send_moderation_summary(report, interaction)
 
         # For high or critical severity reports, notify the specialized investigation team
-        if level in ["high", "critical"]:
+        if report.severity_level in ["high", "critical"]:
             investigation_team_member = (
                 "<@469007804523479050>"  # Temporarily tag William as the investigation team
             )
-            investigation_message = f"🚨 {investigation_team_member} A {SEVERITY_LEVELS[level]['label']} report requires your attention. Report ID: {report.id}"
+            investigation_message = f"🚨 {investigation_team_member} A {SEVERITY_LEVELS[report.severity_level]['label']} report requires your attention. Report ID: {report.id}"
             alert_message = await report.mod_thread.send(investigation_message)
             report.mod_messages.append(alert_message)
 
-    # Start the flow with message action
+    # Start the flow with severity level
     embed = discord.Embed(
-        title="📝 Message Action",
-        description="What should be done with the reported message?",
+        title="📊 Severity Level",
+        description="How severe is this violation?",
         color=discord.Color.blue(),
     )
-    view = MessageActionView(report, on_message_action_complete)
-    message_action_message = await report.mod_thread.send(embed=embed, view=view)
+    view = SeverityLevelView(report, on_severity_complete)
+    severity_message = await report.mod_thread.send(embed=embed, view=view)
 
     # Initialize and track the first moderator message
-    report.mod_messages = [message_action_message]
+    report.mod_messages = [severity_message]
 
 
 async def send_moderation_summary(report, interaction):
@@ -491,7 +490,7 @@ async def warn_user(user, report):
             description="You have received a warning for violating our community guidelines.",
             color=discord.Color.yellow(),
         )
-        add_report_details_to_embed(embed, report, hide_reporter=True, hide_additional_info=True)
+        add_report_details_to_embed(embed, report)
         await user.send(embed=embed)
     except discord.Forbidden:
         pass  # User has DMs disabled
@@ -506,7 +505,7 @@ async def timeout_user(user, report):
             description="You have been timed out for 24 hours for violating our community guidelines.",
             color=discord.Color.orange(),
         )
-        add_report_details_to_embed(embed, report, hide_reporter=True, hide_additional_info=True)
+        add_report_details_to_embed(embed, report)
         await user.send(embed=embed)
     except discord.Forbidden:
         pass  # User has DMs disabled
@@ -521,7 +520,7 @@ async def kick_user(user, report):
             description="You have been kicked from the server for violating our community guidelines.",
             color=discord.Color.red(),
         )
-        add_report_details_to_embed(embed, report, hide_reporter=True, hide_additional_info=True)
+        add_report_details_to_embed(embed, report)
         await user.send(embed=embed)
     except discord.Forbidden:
         pass  # Bot doesn't have kick permissions
@@ -536,7 +535,7 @@ async def ban_user(user, report):
             description="You have been banned from the server for violating our community guidelines.",
             color=discord.Color.red(),
         )
-        add_report_details_to_embed(embed, report, hide_reporter=True, hide_additional_info=True)
+        add_report_details_to_embed(embed, report)
         await user.send(embed=embed)
     except discord.Forbidden:
         pass  # Bot doesn't have ban permissions or user has DMs disabled

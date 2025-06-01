@@ -7,6 +7,8 @@ import json
 import logging
 import re
 from report import Report
+from agent import load_optimized_agent
+import shortuuid
 
 # Set up logging to the console
 logger = logging.getLogger("discord")
@@ -28,6 +30,7 @@ class ModBot(commands.Bot):
         self.group_num = None
         self.mod_channels = {}  # Map from guild to the mod channel id for that guild
         self.active_reports = {}  # Maps from (report_id) to (user_id, report_object)
+        self.agent = load_optimized_agent()
 
     async def setup_hook(self):
         """This executes when the bot is starting up"""
@@ -87,6 +90,68 @@ class ModBot(commands.Bot):
         self.active_reports[report.id] = (interaction.user.id, report)
         await report.show_report_view()
 
+    async def on_message(self, message: discord.Message):
+        """
+        When a message is sent, this function is called
+        """
+        if message.author.bot:
+            return
+
+        # Only consider messages in the group-{group_num} channel
+        if message.channel.name != f"group-{self.group_num}":
+            return
+
+        print(f"Message: {message.content}")
+
+        prediction = self.agent(message.content)
+        reasoning = prediction.reasoning
+        abuse_type = prediction.abuse_type
+        fraud_subtype = prediction.fraud_subtype
+        severity = prediction.severity
+        confidence = prediction.confidence
+
+        print(f"    Abuse Type: {abuse_type}")
+        print(f"    Fraud Subtype: {fraud_subtype}")
+        print(f"    Severity: {severity}")
+        print(f"    Confidence: {confidence}")
+        print(f"    Reasoning: {reasoning}\n\n")
+
+        # Auto-report if confidence is decent (>= 0.7) and abuse type is not None
+        if confidence >= 0.7 and abuse_type is not None and abuse_type.lower() != "none":
+            await self.create_automatic_report(
+                message, abuse_type, fraud_subtype, severity, confidence, reasoning
+            )
+
+    async def create_automatic_report(
+        self, message, abuse_type, fraud_subtype, severity, confidence, reasoning
+    ):
+        """
+        Create an automatic report when the agent detects abuse with high confidence
+        """
+        logger.info(
+            f"Creating automatic report for message from {message.author} with abuse type: {abuse_type}, confidence: {confidence}"
+        )
+
+        # Create agent data dictionary
+        agent_data = {
+            "abuse_type": abuse_type,
+            "fraud_subtype": fraud_subtype,
+            "severity": severity,
+            "confidence": confidence,
+            "reasoning": reasoning,
+        }
+
+        # Create an automatic report using the existing Report class
+        report = Report(self, None, message, automatic=True, agent_data=agent_data)
+
+        # Add to active reports (using bot's ID as the "reporter")
+        self.active_reports[report.id] = (self.user.id, report)
+
+        # Submit directly to moderators
+        await report.submit_automatic_report()
+
+        logger.info(f"Automatic report {report.id} submitted to moderators")
+
 
 ########################################################
 # Initialization
@@ -138,6 +203,9 @@ async def list_reports(ctx):
     )
 
     for i, report in enumerate(guild_reports[:10]):  # Limit to 10 reports to avoid embed limits
+        # Determine if this is an automatic report
+        is_automatic = getattr(report, "is_automatic", False)
+
         # Get report type with emoji
         if report.abuse_category and report.abuse_category in ctx.bot._get_abuse_types():
             abuse_type = ctx.bot._get_abuse_types()[report.abuse_category]
@@ -152,13 +220,27 @@ async def list_reports(ctx):
                 subtype = abuse_type.subtypes[report.subtypes[0]]
                 type_text += f" → {subtype.emoji} {subtype.label}"
 
+        # Format reporter info
+        if is_automatic:
+            reporter_info = "🤖 AI Agent (Automatic)"
+        else:
+            reporter_info = f"<@{ctx.bot.active_reports[report.id][0]}>"
+
         # Create field for this report
+        report_title = f"{'🤖 ' if is_automatic else ''}Report #{report.id}"
+
+        field_value = f"**Type:** {type_text}\n"
+        field_value += f"**Reporter:** {reporter_info}\n"
+        field_value += f"**Target:** {report.reported_message.author.mention}\n"
+
+        if is_automatic:
+            field_value += f"**AI Confidence:** {report.agent_confidence}%\n"
+
+        field_value += f"**Message:** [Jump to Moderator Action]({report.mod_message.jump_url})"
+
         embed.add_field(
-            name=f"Report #{report.id}",
-            value=f"**Type:** {type_text}\n"
-            f"**Reporter:** <@{ctx.bot.active_reports[report.id][0]}>\n"
-            f"**Target:** {report.reported_message.author.mention}\n"
-            f"**Message:** [Jump to Moderator Action]({report.mod_message.jump_url})",
+            name=report_title,
+            value=field_value,
             inline=False,
         )
 

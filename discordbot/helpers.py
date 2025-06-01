@@ -14,19 +14,16 @@ def quote_message(message):
     return message_content
 
 
-def add_report_details_to_embed(embed, report, hide_reporter=False, hide_additional_info=False):
+def add_report_details_to_embed(embed, report):
     """Add report details to an embed.
 
     Args:
         embed: The discord.Embed to add details to
         report: Report object containing report information
-        hide_reporter: If True, don't show who reported the message
-        hide_additional_info: If True, don't show additional information
     """
     from abuse_types import ABUSE_TYPES
 
     message = report.reported_message
-    reporter = report.interaction.user
 
     # Add the reported user's profile picture as thumbnail
     embed.set_thumbnail(url=message.author.display_avatar.url if message.author.display_avatar else None)
@@ -55,13 +52,6 @@ def add_report_details_to_embed(embed, report, hide_reporter=False, hide_additio
     embed.add_field(name="Message Author", value=message.author.mention, inline=True)
     embed.add_field(name="Channel", value=message.jump_url, inline=True)
     embed.add_field(name="Message Content", value=quote_message(message), inline=False)
-
-    if not hide_reporter:
-        embed.add_field(name="Reported by", value=reporter.mention)
-
-    # Add additional information if provided and not hidden
-    if not hide_additional_info and report.additional_info:
-        embed.add_field(name="Additional Information", value=report.additional_info, inline=False)
 
     embed.set_footer(text=f"Report ID: {report.id}")
     embed.timestamp = discord.utils.utcnow()
