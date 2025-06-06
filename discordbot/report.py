@@ -4,12 +4,14 @@ from abuse_types import ABUSE_TYPES, REPORT_CONFIRMATION_MESSAGE
 from helpers import quote_message, add_report_details_to_embed
 from moderation_flow import ModeratorView
 from report_views import MainReportView
+from datetime import datetime
 
 
 class Report:
     def __init__(self, client, interaction, message, automatic=False, agent_data=None):
         self.client = client
         self.id = shortuuid.uuid()[:8]
+        self.created_at = datetime.now()
 
         # Core report data
         self.reported_message = message

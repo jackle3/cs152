@@ -96,6 +96,8 @@ class ModBot(commands.Bot):
         if message.author.bot:
             return
 
+        await self.process_commands(message)
+
         # Only consider messages in the group-{group_num} channel
         if message.channel.name != f"group-{self.group_num}":
             return
@@ -115,8 +117,8 @@ class ModBot(commands.Bot):
         print(f"    Confidence: {confidence}")
         print(f"    Reasoning: {reasoning}\n\n")
 
-        # Auto-report if confidence is decent (>= 0.7) and abuse type is not None
-        if confidence >= 0.7 and abuse_type is not None and abuse_type.lower() != "none":
+        # Auto-report if confidence is decent (>= 0.75) and abuse type is not None
+        if confidence >= 0.75 and abuse_type is not None and abuse_type.lower() != "none":
             await self.create_automatic_report(
                 message, abuse_type, fraud_subtype, severity, confidence, reasoning
             )
@@ -171,7 +173,7 @@ bot = ModBot()
 ########################################################
 # Commands
 ########################################################
-@bot.command(name="list_reports")
+@bot.command(name="reports")
 async def list_reports(ctx):
     """List all active reports in the mod channel (Moderators only)"""
     # Check if this is being used in a mod channel
@@ -194,6 +196,12 @@ async def list_reports(ctx):
         await ctx.send(embed=embed)
         return
 
+    # Sort the reports by:
+    # 1. User reports go before automatic reports
+    # 2. User reports are sorted fraud first, then the rest. For ties, we sort by oldest first
+    # 3. Automatic reports are sorted by AI confidence, then oldest first
+    guild_reports.sort(key=lambda x: (x.is_automatic, x.abuse_category != "fraud", x.created_at))
+
     # Create embed with report list
     embed = discord.Embed(
         title="📋 Active Reports",
@@ -201,7 +209,7 @@ async def list_reports(ctx):
         color=discord.Color.orange(),
     )
 
-    for i, report in enumerate(guild_reports[:10]):  # Limit to 10 reports to avoid embed limits
+    for i, report in enumerate(guild_reports[:5]):
         # Determine if this is an automatic report
         is_automatic = getattr(report, "is_automatic", False)
 
@@ -242,6 +250,9 @@ async def list_reports(ctx):
             value=field_value,
             inline=False,
         )
+
+        # add a divider between reports (dashes)
+        embed.add_field(name="-" * 50, value="\u200b", inline=False)
 
     if len(guild_reports) > 10:
         embed.set_footer(text=f"Showing first 10 of {len(guild_reports)} reports")
