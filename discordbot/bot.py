@@ -196,11 +196,18 @@ async def list_reports(ctx):
         await ctx.send(embed=embed)
         return
 
-    # Sort the reports by:
-    # 1. User reports go before automatic reports
-    # 2. User reports are sorted fraud first, then the rest. For ties, we sort by oldest first
-    # 3. Automatic reports are sorted by AI confidence, then oldest first
-    guild_reports.sort(key=lambda x: (x.is_automatic, x.abuse_category != "fraud", x.created_at))
+    # Sort the reports by
+    def sort_reports(report):
+        # User reports come before automatic reports
+        if not report.is_automatic:
+            # For user reports: fraud first, then oldest
+            return (0, report.abuse_category != "fraud", -1, report.created_at)
+        else:
+            # For automatic reports: severity, confidence, oldest
+            severity_order = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+            return (1, severity_order.get(report.agent_severity, 3), -report.agent_confidence, report.created_at)
+            
+    guild_reports.sort(key=sort_reports)
 
     # Create embed with report list
     embed = discord.Embed(
@@ -209,7 +216,8 @@ async def list_reports(ctx):
         color=discord.Color.orange(),
     )
 
-    for i, report in enumerate(guild_reports[:5]):
+    max_reports = 5
+    for i, report in enumerate(guild_reports[:max_reports]):
         # Determine if this is an automatic report
         is_automatic = getattr(report, "is_automatic", False)
 
@@ -241,6 +249,7 @@ async def list_reports(ctx):
         field_value += f"**Target:** {report.reported_message.author.mention}\n"
 
         if is_automatic:
+            field_value += f"**Severity:** {report.agent_severity}\n"
             field_value += f"**AI Confidence:** {report.agent_confidence}%\n"
 
         field_value += f"**Message:** [Jump to Moderator Action]({report.mod_message.jump_url})"
@@ -254,8 +263,8 @@ async def list_reports(ctx):
         # add a divider between reports (dashes)
         embed.add_field(name="-" * 50, value="\u200b", inline=False)
 
-    if len(guild_reports) > 10:
-        embed.set_footer(text=f"Showing first 10 of {len(guild_reports)} reports")
+    if len(guild_reports) > max_reports:
+        embed.set_footer(text=f"Showing first {max_reports} of {len(guild_reports)} reports")
 
     await ctx.send(embed=embed)
 
