@@ -4,10 +4,11 @@ Group 18: Jack Le, William Li, Ashley Leon, Nathan Paek, Ethan Hsu
 CS 152 Spring 2025
 
 ## Poster
-![Poster](assets/final/poster.pdf)
+[![Poster](assets/final/poster.png)](assets/final/poster.pdf)
+
 
 ## Video Demo
-![Video Demo](assets/final/demo.mp4)
+The link for the video demo is [here](assets/final/demo.mp4).
 
 ## File Overview
 ```
